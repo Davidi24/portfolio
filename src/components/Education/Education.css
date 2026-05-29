@@ -1,0 +1,119 @@
+.education-section {
+	position: relative;
+	min-height: 110vh;
+	background: #f5f5f5;
+	color: #1e1e1e;
+	padding: clamp(7rem, 12vw, 12rem) clamp(1.5rem, 6vw, 6rem);
+}
+
+.education-inner {
+	display: grid;
+	grid-template-columns: minmax(18rem, 0.72fr) 1fr;
+	gap: clamp(3rem, 8vw, 9rem);
+	max-width: 96rem;
+	margin: 0 auto;
+}
+
+.education-copy {
+	position: sticky;
+	top: 8rem;
+	align-self: start;
+}
+
+.education-kicker {
+	margin: 0 0 1.4rem;
+	color: #c6f435;
+	font-size: 0.78rem;
+	font-weight: 800;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+}
+
+.education-heading {
+	margin: 0;
+	font-size: clamp(3.4rem, 6.8vw, 8rem);
+	font-weight: 500;
+	line-height: 0.92;
+	letter-spacing: 0;
+}
+
+.education-lead {
+	max-width: 42rem;
+	margin: clamp(2rem, 4vw, 3.5rem) 0 0;
+	color: #666a70;
+	font-size: clamp(1.1rem, 1.55vw, 1.45rem);
+	line-height: 1.65;
+}
+
+.education-list {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.education-card {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: clamp(1.2rem, 3vw, 2.5rem);
+	border: 1px solid #dad7d2;
+	border-radius: 1.4rem;
+	background: #ffffff;
+	padding: clamp(1.5rem, 3vw, 3rem);
+	box-shadow: 0 24px 70px rgba(30, 30, 30, 0.07);
+	will-change: transform, opacity;
+}
+
+.education-number {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 3rem;
+	height: 3rem;
+	border-radius: 50%;
+	background: #1e1e1e;
+	color: #c6f435;
+	font-weight: 800;
+}
+
+.education-card p {
+	margin: 0 0 0.9rem;
+	color: #666a70;
+	font-size: 0.78rem;
+	font-weight: 700;
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+}
+
+.education-card h3 {
+	margin: 0;
+	font-size: clamp(2rem, 3.2vw, 4rem);
+	font-weight: 500;
+	line-height: 1;
+	letter-spacing: 0;
+}
+
+.education-card span:not(.education-number) {
+	display: block;
+	max-width: 42rem;
+	margin-top: 1.2rem;
+	color: #666a70;
+	font-size: clamp(1rem, 1.3vw, 1.25rem);
+	line-height: 1.65;
+}
+
+@media (max-width: 980px) {
+	.education-inner {
+		grid-template-columns: 1fr;
+	}
+
+	.education-copy {
+		position: relative;
+		top: auto;
+	}
+}
+
+@media (max-width: 720px) {
+	.education-section {
+		padding-inline: 1rem;
+	}
+}

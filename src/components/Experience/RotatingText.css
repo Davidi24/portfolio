@@ -1,0 +1,52 @@
+.rotating-text {
+	display: inline-flex;
+	width: max-content;
+	overflow: hidden;
+	border-radius: 0.18em;
+	background: #c6f435;
+	color: #111111;
+	padding: 0.02em 0.14em 0.08em;
+	vertical-align: baseline;
+	line-height: 0.9;
+	transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+	will-change: width;
+}
+
+.rotating-text-word {
+	display: inline-flex;
+	white-space: nowrap;
+}
+
+.rotating-text-letter {
+	display: inline-block;
+	transform-origin: 50% 100%;
+	animation: rotating-text-in 0.72s cubic-bezier(0.22, 1, 0.36, 1) both;
+	animation-delay: calc(var(--i) * 0.035s);
+	will-change: transform, opacity, filter;
+}
+
+@keyframes rotating-text-in {
+	0% {
+		opacity: 0;
+		filter: blur(8px);
+		transform: translateY(0.9em) rotateX(-90deg);
+	}
+
+	58% {
+		opacity: 1;
+		filter: blur(0);
+		transform: translateY(-0.08em) rotateX(12deg);
+	}
+
+	100% {
+		opacity: 1;
+		filter: blur(0);
+		transform: translateY(0) rotateX(0deg);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.rotating-text-letter {
+		animation: none;
+	}
+}

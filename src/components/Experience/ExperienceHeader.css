@@ -1,0 +1,43 @@
+.experience-intro-copy {
+	display: flex;
+	min-height: 70vh;
+	flex-direction: column;
+	justify-content: flex-end;
+	padding: clamp(3rem, 6vw, 6rem);
+}
+
+.experience-intro-kicker {
+	margin: 0 0 1.2rem;
+	color: #c6f435;
+	font-size: 0.8rem;
+	font-weight: 600;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+}
+
+.experience-intro-accent {
+	display: block;
+	width: min(12rem, 24vw);
+	height: 0.35rem;
+	margin: 0 0 clamp(1.6rem, 3vw, 3rem);
+	border-radius: 999px;
+	background: #c6f435;
+	transform: scaleX(0);
+	transform-origin: left center;
+	will-change: transform, opacity;
+}
+
+.experience-intro-copy h2 {
+	max-width: 68rem;
+	margin: 0;
+	color: #1e1e1e;
+	font-size: clamp(3.8rem, 8.2vw, 9.2rem);
+	font-weight: 600;
+	line-height: 0.9;
+	letter-spacing: 0;
+	text-transform: uppercase;
+}
+
+.experience-intro-with {
+	white-space: nowrap;
+}

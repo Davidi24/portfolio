@@ -1,0 +1,71 @@
+.true-focus {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.42em;
+	color: #ffffff;
+	font-size: clamp(0.68rem, 1.55vw, 1.72rem);
+	font-weight: 850;
+	letter-spacing: 0;
+	line-height: 1;
+	text-transform: uppercase;
+	user-select: none;
+}
+
+.true-focus-word {
+	position: relative;
+	display: inline-block;
+	white-space: nowrap;
+}
+
+.true-focus-frame {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 2;
+	box-sizing: content-box;
+	pointer-events: none;
+}
+
+.true-focus-corner {
+	position: absolute;
+	width: 0.25em;
+	height: 0.25em;
+	border: 0.06em solid var(--border-color, #ffffff);
+	filter: drop-shadow(0 0 0.12em var(--glow-color, rgba(255, 255, 255, 0.55)));
+}
+
+.true-focus-corner-top-left {
+	top: -0.16em;
+	left: -0.16em;
+	border-right: 0;
+	border-bottom: 0;
+}
+
+.true-focus-corner-top-right {
+	top: -0.16em;
+	right: -0.16em;
+	border-left: 0;
+	border-bottom: 0;
+}
+
+.true-focus-corner-bottom-left {
+	bottom: -0.16em;
+	left: -0.16em;
+	border-right: 0;
+	border-top: 0;
+}
+
+.true-focus-corner-bottom-right {
+	right: -0.16em;
+	bottom: -0.16em;
+	border-left: 0;
+	border-top: 0;
+}
+
+@media (max-width: 720px) {
+	.true-focus {
+		font-size: clamp(1rem, 6vw, 2rem);
+	}
+}

@@ -1,0 +1,64 @@
+import { Suspense, lazy, useEffect } from 'react';
+import Lenis from 'lenis';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import './App.css';
+import Navbar from './components/Navigation/Navbar';
+import Hero from './components/Hero/Hero';
+import AboutMe from './components/About/AboutMe';
+import CustomCursor from './components/Cursor/CustomCursor';
+import ExperienceIntro from './components/Experience/ExperienceIntro';
+import PortfolioFinale from './components/Finale/PortfolioFinale';
+
+const InfiniteMenuTestPage = lazy(() => import('./pages/InfiniteMenuTestPage'));
+
+function PortfolioHome() {
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const lenis = new Lenis({
+      lerp: 0.08,
+      smoothWheel: true
+    });
+
+    const updateScroll = (time: number) => {
+      lenis.raf(time * 1000);
+    };
+
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(updateScroll);
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      gsap.ticker.remove(updateScroll);
+      lenis.destroy();
+    };
+  }, []);
+
+  return (
+    <>
+      <CustomCursor />
+      <Navbar />
+      <Hero />
+      <AboutMe />
+      <ExperienceIntro />
+      <PortfolioFinale />
+    </>
+  );
+}
+
+export default function App() {
+  const isInfiniteMenuTest =
+    window.location.pathname === '/test' ||
+    window.location.pathname === '/infinite-menu-test';
+
+  if (isInfiniteMenuTest) {
+    return (
+      <Suspense fallback={null}>
+        <InfiniteMenuTestPage />
+      </Suspense>
+    );
+  }
+
+  return <PortfolioHome />;
+}
