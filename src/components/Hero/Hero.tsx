@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import logo from '../../assets/logo.png';
+import { FiArrowUpRight } from 'react-icons/fi';
 import TrueFocus from './TrueFocus';
 import GlitchText from './GlitchText';
 import './Hero.css';
@@ -54,6 +54,7 @@ export default function Hero() {
   const titleRef    = useRef<HTMLDivElement>(null);
   const iAnchorRef  = useRef<HTMLDivElement>(null);
   const iRef        = useRef<HTMLDivElement>(null);
+  const mobileActionsRef = useRef<HTMLDivElement>(null);
   const sequenceStartedRef = useRef(false);
   const forwardCycleCompletedRef = useRef(false);
   const phraseIndexRef = useRef(0);
@@ -95,12 +96,9 @@ export default function Hero() {
       setGlitchActive(true);
       window.setTimeout(() => setGlitchActive(false), 650);
     };
-    const first = window.setTimeout(() => {
-      trigger();
-      loop = window.setInterval(trigger, 6000);
-    }, 6000);
+    trigger();
+    loop = window.setInterval(trigger, 4000);
     return () => {
-      window.clearTimeout(first);
       window.clearInterval(loop);
     };
   }, []);
@@ -127,6 +125,7 @@ export default function Hero() {
     const title    = titleRef.current;
     const iAnchor  = iAnchorRef.current;
     const iLetter  = iRef.current;
+    const mobileActions = mobileActionsRef.current;
     if (!subtitle || !title || !iAnchor || !iLetter) return;
 
     const backingText = title.querySelectorAll<HTMLElement>('.hero-title-back');
@@ -150,40 +149,74 @@ export default function Hero() {
     };
     const initialWidth = () => cssVar('--hero-i-visual-width', cssVar('--hero-i-width', '0.12em'));
     const initialHeight = () => cssVar('--hero-i-visual-height', cssVar('--hero-i-height', '0.78em'));
-    const centerX = () => {
+    const centeredXForWidth = (width: number) => {
       const rect = iAnchor.getBoundingClientRect();
-      return window.innerWidth / 2 - (rect.left + rect.width / 2);
+      return window.innerWidth / 2 - (rect.left + width / 2);
     };
-    const centerY = () => {
+
+    const centeredYForHeight = (height: number) => {
       const rect = iAnchor.getBoundingClientRect();
-      const opticalOffset = rect.height * focusScale() * 0.02;
-      return window.innerHeight / 2 - (rect.top + rect.height / 2) + opticalOffset;
+      return window.innerHeight / 2 - (rect.bottom - height / 2);
     };
+
+    const currentILetterWidth = () => iLetter.offsetWidth || iAnchor.getBoundingClientRect().width;
+    const currentILetterHeight = () => iLetter.offsetHeight || iAnchor.getBoundingClientRect().height;
+    const centerX = () => centeredXForWidth(currentILetterWidth());
+    const centerY = () => centeredYForHeight(currentILetterHeight());
     const focusScale = () => {
       const rect = iAnchor.getBoundingClientRect();
       const targetScale = window.innerWidth <= 720 ? 3.2 : 3;
       const maxScale = (window.innerHeight * 0.55) / rect.height;
       return Math.min(targetScale, maxScale);
     };
-    const expandedFactor = () => Math.max(focusScale() * projectedScale(), 1);
-    const expandedTargetWidth = () =>
-      Math.min(viewportLength('--hero-i-expanded-width', 'x', 0.62), window.innerWidth * 0.62);
-    const expandedTargetHeight = () =>
-      Math.min(viewportLength('--hero-i-expanded-height', 'y', 0.68), window.innerHeight * 0.68);
-    const expandedWidthPx = () => expandedTargetWidth() / expandedFactor();
-    const expandedHeightPx = () => expandedTargetHeight() / expandedFactor();
+    const usesFlatExpandedLetter = () => window.innerWidth <= 800;
+    const expandedTransformFactor = () =>
+      usesFlatExpandedLetter() ? 1 : Math.max(focusScale() * projectedScale(), 1);
+    const currentProjection = () => {
+      const z = parseFloat(String(gsap.getProperty(iLetter, 'z'))) || 0;
+      const scale = parseFloat(String(gsap.getProperty(iLetter, 'scale'))) || 1;
+      const p = perspective();
+      return Math.max(scale * (p / Math.max(p - z, 1)), 1);
+    };
+    const lockILetterToViewportCenter = () => {
+      gsap.set(iLetter, {
+        x: centeredXForWidth(currentILetterWidth()),
+        y: centeredYForHeight(currentILetterHeight()),
+      });
+
+      const projection = currentProjection();
+      for (let i = 0; i < 4; i += 1) {
+        const rect = iLetter.getBoundingClientRect();
+        const currentX = parseFloat(String(gsap.getProperty(iLetter, 'x'))) || 0;
+        const currentY = parseFloat(String(gsap.getProperty(iLetter, 'y'))) || 0;
+
+        gsap.set(iLetter, {
+          x: currentX + (window.innerWidth / 2 - (rect.left + rect.width / 2)) / projection,
+          y: currentY + (window.innerHeight / 2 - (rect.top + rect.height / 2)) / projection,
+        });
+      }
+    };
+    const expandedTargetWidth = () => {
+      const isLaptopViewport = window.innerWidth >= 1000 && window.innerWidth < 1300;
+      const isMidMonitorViewport = window.innerWidth >= 1300 && window.innerWidth <= 1600;
+      const maxWidthRatio = window.innerWidth <= 800 ? 0.99 : isLaptopViewport ? 0.76 : isMidMonitorViewport ? 0.68 : 0.62;
+      return Math.min(viewportLength('--hero-i-expanded-width', 'x', maxWidthRatio), window.innerWidth * maxWidthRatio);
+    };
+    const expandedTargetHeight = () => {
+      const isLaptopViewport = window.innerWidth >= 1000 && window.innerWidth < 1300;
+      const maxHeightRatio = window.innerWidth <= 800 ? 0.68 : isLaptopViewport ? 0.82 : 0.68;
+      return Math.min(viewportLength('--hero-i-expanded-height', 'y', maxHeightRatio), window.innerHeight * maxHeightRatio);
+    };
+    const expandedWidthPx = () => expandedTargetWidth() / expandedTransformFactor();
+    const expandedHeightPx = () => expandedTargetHeight() / expandedTransformFactor();
     const expandedWidth = () => `${expandedWidthPx()}px`;
     const expandedHeight = () => `${expandedHeightPx()}px`;
-    const expandedX = () => {
-      const rect = iAnchor.getBoundingClientRect();
-      return window.innerWidth / 2 - (rect.left + expandedWidthPx() / 2);
-    };
-    const expandedY = () => {
-      const rect = iAnchor.getBoundingClientRect();
-      return window.innerHeight / 2 - (rect.top + expandedHeightPx() / 2);
-    };
+    const expandedX = () => centeredXForWidth(expandedWidthPx());
+    const expandedY = () => centeredYForHeight(expandedHeightPx());
+    const expandedScale = () => usesFlatExpandedLetter() ? 1 : focusScale();
+    const expandedZ = () => usesFlatExpandedLetter() ? 0 : focusDepth;
 
-    gsap.set([subtitle, backingText], {
+    gsap.set([subtitle, backingText, mobileActions].filter(Boolean), {
       opacity: 1,
       scale: 1,
       y: 0,
@@ -257,6 +290,14 @@ export default function Hero() {
         duration: 1.5,
         ease: 'power3.out',
       }, 0)
+      .to(mobileActions, {
+        opacity: 0,
+        y: '2vh',
+        z: -420,
+        filter: 'blur(2px)',
+        duration: 1.5,
+        ease: 'power3.out',
+      }, 0)
       .to(iLetter,  {
         x: centerX,
         y: centerY,
@@ -268,19 +309,20 @@ export default function Hero() {
         onReverseComplete: () => setImagesActive(false),
       }, 0.06)
       .to(iLetter, {
+        x: expandedX,
         y: expandedY,
+        scale: expandedScale,
+        z: expandedZ,
+        width: expandedWidth,
         height: expandedHeight,
         backgroundColor: '#000000',
         borderRadius: '0px',
-        duration: 0.65,
-        ease: 'power3.inOut',
-      })
-      .to(iLetter, {
-        x: expandedX,
-        width: expandedWidth,
         duration: 1.25,
         ease: 'power3.inOut',
-      }, '<')
+        onUpdate: lockILetterToViewportCenter,
+        onComplete: lockILetterToViewportCenter,
+        onReverseComplete: lockILetterToViewportCenter,
+      })
       .to({}, {
         duration: 0.01,
         onStart: startFocusSequence,
@@ -298,36 +340,6 @@ export default function Hero() {
           startFocusSequence();
         },
       })
-      .to(backingText, {
-        opacity: 1,
-        scale: 1,
-        z: 0,
-        filter: 'blur(0px)',
-        duration: 1.35,
-        ease: 'power2.inOut',
-      })
-      .to(subtitle, {
-        opacity: 1,
-        y: 0,
-        z: 0,
-        filter: 'blur(0px)',
-        duration: 1.35,
-        ease: 'power2.inOut',
-      }, '<')
-      .to(iLetter,  {
-        x: 0,
-        y: 0,
-        scale: 1,
-        z: 0,
-        opacity: 1,
-        width: initialWidth,
-        height: initialHeight,
-        backgroundColor: '#1a1a16',
-        borderRadius: '0px',
-        textShadow: '0 0 0 rgba(17, 17, 17, 0)',
-        duration: 1.35,
-        ease: 'power2.inOut',
-      }, '<')
       .to({}, { duration: 0.001 });
 
     return () => { tl.kill(); };
@@ -339,8 +351,7 @@ export default function Hero() {
       <div className="hero-bg" aria-hidden="true" />
 
       <aside className="left-sidebar">
-        <img src={logo} alt="David logo" className="sidebar-logo" />
-
+        <img src="/logo.png" alt="David logo" className="sidebar-logo" />
 
         <div className="social-icons">
           {socials.map(({ label, href, path }) => (
@@ -389,10 +400,29 @@ export default function Hero() {
             <span className="hero-title-back hero-title-fragment">neer</span>
           </div>
         </div>
+
+        <div ref={mobileActionsRef} className="mobile-hero-actions">
+          <div className="mobile-social-icons" aria-label="Social links">
+            {socials.map(({ label, href, path }) => (
+              <a key={label} href={href} aria-label={label} className="mobile-social-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d={path} />
+                </svg>
+              </a>
+            ))}
+          </div>
+          <a href="/cv.pdf" download className="mobile-cv-button" aria-label="Download CV">
+            <span className="mobile-cv-label">Download CV</span>
+            <span className="mobile-cv-bridge" />
+            <span className="mobile-cv-arrow" aria-hidden="true">
+              <FiArrowUpRight className="mobile-cv-arrow-icon" />
+            </span>
+          </a>
+        </div>
       </div>
 
       <div className="hero-scroll">
-        <span>Scroll Down</span>
+        <span>Scroll to Explore</span>
         <svg width="1" height="48" viewBox="0 0 1 48" aria-hidden="true">
           <line x1="0.5" y1="0" x2="0.5" y2="36" stroke="currentColor" strokeWidth="1" />
           <polyline points="-4,30 0.5,38 5,30" fill="none" stroke="currentColor" strokeWidth="1" />

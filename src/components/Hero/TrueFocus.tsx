@@ -38,6 +38,7 @@ export default function TrueFocus({
   onComplete,
 }: TrueFocusProps) {
   const words = sentence.split(separator).filter(Boolean);
+  const hasLongWord = words.some(word => word.length >= 7);
   const containerRef = useRef<HTMLDivElement>(null);
   const wordRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -94,7 +95,7 @@ export default function TrueFocus({
   }, [active, currentIndex, words.length]);
 
   return (
-    <div className="true-focus" ref={containerRef} aria-label={sentence}>
+    <div className={`true-focus${hasLongWord ? ' true-focus-long' : ''}`} ref={containerRef} aria-label={sentence}>
       {words.map((word, index) => {
         const isActive = index === currentIndex && active;
 
