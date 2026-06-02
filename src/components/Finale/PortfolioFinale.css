@@ -5,6 +5,7 @@
 	--edu-img-bg-2: #22221d;
 	position: relative;
 	z-index: 3;
+	width: 100%;
 	overflow: hidden;
 	background: #f5f5f5;
 	color: #111111;
@@ -70,6 +71,7 @@
 	letter-spacing: 0;
 	line-height: 0.88;
 	text-transform: uppercase;
+	overflow-wrap: anywhere;
 }
 
 .work-title span {
@@ -110,6 +112,7 @@
 	text-decoration: none;
 	text-transform: uppercase;
 	white-space: nowrap;
+	max-width: 100%;
 	transition:
 		background 260ms ease,
 		color 260ms ease,
@@ -134,9 +137,10 @@
 
 .work-project {
 	display: grid;
-	grid-template-columns: 4rem minmax(15rem, 0.9fr) minmax(15rem, 1fr) minmax(10rem, 0.7fr) minmax(12rem, 0.8fr) auto;
+	grid-template-columns: 4rem minmax(13rem, 0.9fr) minmax(14rem, 1fr) minmax(9rem, 0.68fr) minmax(11rem, 0.76fr) auto;
 	gap: clamp(0.9rem, 2vw, 2.2rem);
 	align-items: center;
+	min-width: 0;
 	min-height: 13.5rem;
 	border-bottom: 1px solid rgba(17, 17, 17, 0.14);
 	background: transparent;
@@ -155,12 +159,14 @@
 	gap: 0.55rem;
 	align-self: center;
 	color: #111111;
+	min-width: 0;
 }
 
 .work-project-copy {
 	display: grid;
 	gap: 0.6rem;
 	align-content: center;
+	min-width: 0;
 }
 
 .work-project-copy p {
@@ -176,6 +182,7 @@
 	letter-spacing: 0;
 	line-height: 0.96;
 	text-wrap: balance;
+	overflow-wrap: anywhere;
 }
 
 .work-project-body {
@@ -184,6 +191,7 @@
 	font-size: clamp(0.94rem, 1vw, 1.04rem);
 	font-weight: 400;
 	line-height: 1.55;
+	min-width: 0;
 }
 
 .work-tags {
@@ -191,6 +199,7 @@
 	flex-wrap: wrap;
 	gap: 0.42rem;
 	margin: 0;
+	min-width: 0;
 }
 
 .work-tags span {
@@ -211,6 +220,7 @@
 	border-color: #111111;
 	background: transparent;
 	color: #111111;
+	max-width: 100%;
 }
 
 .work-folder {
@@ -218,6 +228,7 @@
 	width: min(13.5rem, 100%);
 	aspect-ratio: 1.18;
 	justify-self: end;
+	min-width: 0;
 	outline: 0;
 	perspective: 1000px;
 	transform-style: preserve-3d;
@@ -308,6 +319,8 @@
 	letter-spacing: 0.12em;
 	line-height: 1;
 	text-transform: uppercase;
+	text-align: center;
+	overflow-wrap: anywhere;
 }
 
 .work-folder-papers {
@@ -556,6 +569,7 @@
 	display: grid;
 	gap: 0.9rem;
 	justify-items: end;
+	min-width: 0;
 }
 
 .finale-contact-socials {
@@ -589,6 +603,27 @@
 	transform: translateY(-0.16rem);
 }
 
+.finale-cv-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 3rem;
+	height: 3rem;
+	background: #111111;
+	color: #ffffff;
+	border-radius: 50%;
+	font-size: 0.72rem;
+	font-weight: 700;
+	letter-spacing: 0.05em;
+	text-decoration: none;
+	transition: background 240ms ease, transform 240ms ease;
+}
+
+.finale-cv-btn:hover {
+	background: #333333;
+	transform: translateY(-0.16rem);
+}
+
 .finale-footer {
 	display: flex;
 	flex-wrap: wrap;
@@ -603,7 +638,27 @@
 	text-decoration: none;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1460px) {
+	.finale-inner {
+		width: min(100%, 92rem);
+		padding-inline: clamp(1.25rem, 4vw, 4rem);
+	}
+
+	.work-project {
+		grid-template-columns: 3.4rem minmax(11rem, 0.82fr) minmax(12rem, 0.95fr) minmax(8rem, 0.6fr) minmax(10rem, 0.64fr) auto;
+		gap: clamp(0.8rem, 1.45vw, 1.55rem);
+	}
+
+	.work-project-copy h3 {
+		max-width: 11ch;
+	}
+
+	.work-folder {
+		width: min(12rem, 100%);
+	}
+}
+
+@media (max-width: 1240px) {
 	.finale-section-head,
 	.finale-contact-panel {
 		grid-template-columns: 1fr;
@@ -624,19 +679,51 @@
 	}
 
 	.work-project {
-		grid-template-columns: 3.2rem minmax(14rem, 1fr) minmax(13rem, 0.8fr);
+		grid-template-columns: 1fr;
+		min-height: auto;
+		gap: clamp(0.85rem, 2vw, 1.15rem);
+		padding: clamp(1.1rem, 2vw, 1.5rem) 0;
 	}
 
 	.work-project-body,
 	.work-tags,
-	.work-project-button {
-		grid-column: 2 / 3;
+	.work-project-button,
+	.work-folder {
+		grid-column: auto;
+		grid-row: auto;
+	}
+
+	.work-project-meta {
+		display: flex;
+		width: 100%;
+		justify-content: space-between;
+	}
+
+	.work-project-copy h3 {
+		max-width: 100%;
+		font-size: clamp(2rem, 5.5vw, 3.8rem);
+	}
+
+	.work-project-body {
+		max-width: 42rem;
+	}
+
+	.work-tags {
+		max-width: 34rem;
 	}
 
 	.work-folder {
-		grid-column: 3;
-		grid-row: 1 / span 4;
-		width: min(15rem, 100%);
+		width: min(17rem, 72vw);
+		justify-self: start;
+		margin-top: 0.15rem;
+	}
+
+	.work-project-button {
+		width: fit-content;
+		min-width: 8.4rem;
+		min-height: 2.55rem;
+		padding: 0.68rem 0.95rem;
+		font-size: 0.68rem;
 	}
 
 	.finale-contact-actions {
@@ -648,18 +735,20 @@
 	}
 }
 
-@media (max-width: 760px) {
+@media (max-width: 980px) {
 	.finale-inner {
-		padding-inline: 1rem;
+		padding-inline: clamp(1rem, 4.5vw, 2.6rem);
 	}
 
-	.work-title {
-		font-size: clamp(3.5rem, 18vw, 6.2rem);
+	.work-hero {
+		padding-top: 1rem;
 	}
 
 	.work-project {
 		grid-template-columns: 1fr;
 		min-height: auto;
+		gap: 0.9rem;
+		padding: 1.25rem 0 1.45rem;
 	}
 
 	.work-project-body,
@@ -670,13 +759,89 @@
 		grid-row: auto;
 	}
 
-	.work-folder {
-		width: min(100%, 16rem);
-		justify-self: start;
+	.work-project-meta {
+		display: flex;
+		width: 100%;
+		justify-content: space-between;
 	}
 
 	.work-project-copy h3 {
+		max-width: 100%;
+		font-size: clamp(2rem, 7vw, 3.5rem);
+	}
+
+	.work-project-body {
+		max-width: 44rem;
+	}
+
+	.work-tags {
+		max-width: 36rem;
+	}
+
+	.work-folder {
+		width: min(16rem, 72vw);
+		justify-self: start;
+		margin-top: 0.2rem;
+	}
+
+	.work-project-button {
+		width: fit-content;
+		min-width: 8.2rem;
+	}
+
+	.finale-education-grid {
+		grid-template-columns: 1fr;
+		gap: 1.5rem;
+	}
+
+	.finale-education-item {
+		min-height: 0;
+	}
+
+	.finale-education-item small {
+		max-width: 44rem;
+	}
+
+	.finale-education-image {
+		width: min(58vw, 18rem);
+		aspect-ratio: 0.78;
+	}
+}
+
+@media (max-width: 760px) {
+	.finale-inner {
+		padding-inline: 1rem;
+	}
+
+	.work-hero {
+		gap: 1rem;
+		padding-top: 1rem;
+		margin-bottom: 1.3rem;
+	}
+
+	.work-title {
+		font-size: clamp(3.5rem, 18vw, 6.2rem);
+	}
+
+	.work-project-body {
+		max-width: 42rem;
+	}
+
+	.work-folder {
+		width: min(15rem, 72vw);
+	}
+
+	.work-project-copy h3 {
+		max-width: 100%;
 		font-size: clamp(2rem, 10vw, 3.4rem);
+	}
+
+	.work-project-button {
+		width: fit-content;
+		min-height: 2.45rem;
+		padding: 0.64rem 0.88rem;
+		font-size: 0.64rem;
+		letter-spacing: 0.1em;
 	}
 
 	.finale-contact-socials a {
@@ -684,18 +849,119 @@
 		height: 2.75rem;
 	}
 
-	.finale-education-grid {
-		grid-template-columns: 1fr;
-		gap: 1.25rem;
-	}
-
-	.finale-education-item {
-		min-height: 0;
-	}
-
 	.finale-education-image {
 		width: min(74vw, 16rem);
-		aspect-ratio: 0.78;
+	}
+}
+
+@media (max-width: 520px) {
+	.finale-inner {
+		padding-inline: 0.85rem;
+	}
+
+	.work-title {
+		font-size: clamp(3rem, 20vw, 4.9rem);
+		line-height: 0.9;
+	}
+
+	.work-hero-copy p {
+		font-size: 0.95rem;
+		line-height: 1.55;
+	}
+
+	.work-project {
+		gap: 0.9rem;
+		padding: 1rem 0 1.25rem;
+	}
+
+	.work-project-copy h3 {
+		font-size: clamp(1.85rem, 12vw, 2.8rem);
+	}
+
+	.work-folder {
+		width: min(13.75rem, 76vw);
+		justify-self: start;
+	}
+
+	.work-folder-front {
+		gap: 0.55rem;
+		padding: 0.78rem;
+	}
+
+	.work-folder-front span {
+		font-size: 0.64rem;
+		letter-spacing: 0.09em;
+	}
+
+	.work-project-button {
+		width: fit-content;
+		min-width: 7.8rem;
+	}
+
+	.finale-section-head {
+		gap: 1rem;
+		margin-bottom: 1.4rem;
+	}
+
+	.finale-section-head h3,
+	.finale-contact-panel h3 {
+		line-height: 0.98;
+	}
+
+	.finale-education,
+	.finale-contact {
+		margin-top: clamp(3.2rem, 12vw, 5rem);
+	}
+
+	.finale-contact-panel {
+		gap: 1.15rem;
+		padding: 2rem 0;
+	}
+
+	.finale-contact-primary {
+		width: 100%;
+		white-space: normal;
+		text-align: center;
+		line-height: 1.2;
+	}
+
+	.finale-contact-actions,
+	.finale-contact-socials {
+		width: 100%;
+	}
+
+	.finale-contact-socials {
+		justify-content: space-between;
+	}
+
+	.finale-footer {
+		display: grid;
+		gap: 0.75rem;
+	}
+}
+
+@media (max-width: 360px) {
+	.work-kicker,
+	.work-project-meta,
+	.work-project-copy p {
+		letter-spacing: 0.12em;
+	}
+
+	.work-title {
+		font-size: clamp(2.6rem, 20vw, 4rem);
+	}
+
+	.work-tags {
+		gap: 0.32rem;
+	}
+
+	.work-tags span {
+		padding: 0.34rem 0.45rem;
+		font-size: 0.58rem;
+	}
+
+	.work-folder-front {
+		padding: 0.65rem;
 	}
 }
 

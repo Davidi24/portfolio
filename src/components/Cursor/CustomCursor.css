@@ -12,3 +12,9 @@
 	margin-top: -26px;
 	will-change: transform;
 }
+
+@media (max-width: 1023px) {
+	.custom-cursor {
+		display: none;
+	}
+}
