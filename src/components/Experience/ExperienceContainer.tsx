@@ -1,5 +1,3 @@
-import { useRef } from 'react';
-import type { CSSProperties } from 'react';
 import './ExperienceContainer.css';
 
 export const experiences = [
@@ -48,48 +46,33 @@ export const experiences = [
 ];
 
 interface ExperienceContainerProps {
-  onCardRef: (el: HTMLElement | null, index: number) => void;
+  activeIndex?: number;
 }
 
-export default function ExperienceContainer({ onCardRef }: ExperienceContainerProps) {
-  // Stable ref callbacks — created once so React doesn't re-call them on every render
-  const stableRefs = useRef<Array<(el: HTMLElement | null) => void>>([]);
-  if (stableRefs.current.length === 0) {
-    stableRefs.current = experiences.map((_, i) => (el: HTMLElement | null) => onCardRef(el, i));
-  }
-
+export default function ExperienceContainer({ activeIndex = 0 }: ExperienceContainerProps) {
   return (
-    <section className="experience-container" aria-label="Experience">
+    <section className="experience-roadmap" aria-label="Experience roadmap">
+      <div className="experience-roadmap-track" aria-hidden="true" />
+
       {experiences.map((item, i) => (
         <article
-          key={i}
-          ref={stableRefs.current![i]}
-          className={`experience-card experience-card--tone-${i + 1}`}
-          style={{ '--experience-line-progress': '0%' } as CSSProperties}
+          key={item.metric}
+          className={`experience-roadmap-card experience-roadmap-card--${i % 2 === 0 ? 'left' : 'right'} experience-roadmap-card--tone-${i + 1}${i === activeIndex ? ' is-active' : ''}`}
         >
-          <div className="experience-card-top">
-            <span className="experience-card-number">{item.metric}</span>
-            <span className="experience-card-period">{item.period}</span>
+          <div className="experience-roadmap-marker">
+            <span>{item.metric}</span>
           </div>
 
-          <div className="experience-card-title">
-            <span>{item.label}</span>
+          <div className="experience-roadmap-content">
+            <div className="experience-roadmap-meta">
+              <span>{item.period}</span>
+              <span>{item.label}</span>
+            </div>
+
             <h3>{item.title}</h3>
-          </div>
+            <p>{item.body}</p>
 
-          <p className="experience-card-body">{item.body}</p>
-
-          <ol className="experience-card-highlights" aria-label={`${item.title} focus areas`}>
-            {item.highlights.map((highlight, index) => (
-              <li key={highlight}>
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                <p>{highlight}</p>
-              </li>
-            ))}
-          </ol>
-
-          <div className="experience-card-footer">
-            <div className="experience-card-tools" aria-label={`${item.title} tools`}>
+            <div className="experience-roadmap-tools" aria-label={`${item.title} tools`}>
               {item.tools.map((tool) => (
                 <span key={tool}>{tool}</span>
               ))}
