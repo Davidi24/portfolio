@@ -101,6 +101,10 @@
   will-change: transform;
 }
 
+.sm-library-icon {
+  display: none;
+}
+
 .sm-panel-itemWrap {
   position: relative;
   overflow: hidden;
@@ -250,6 +254,84 @@
   pointer-events: none;
   user-select: none;
   opacity: var(--sm-num-opacity, 0);
+}
+
+.navbar-menu.fixed-wrapper {
+  z-index: 130;
+}
+
+.navbar-menu .staggered-menu-header {
+  top: var(--site-nav-y, 1.5rem);
+  right: var(--site-nav-gutter, 2rem);
+  left: auto;
+  width: auto;
+  padding: 0;
+}
+
+.navbar-menu .sm-toggle {
+  width: var(--site-menu-size, 3.1rem);
+  height: var(--site-nav-control-size, 3.3rem);
+  justify-content: center;
+  gap: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.navbar-menu .sm-toggle:hover {
+  opacity: 0.78;
+}
+
+.navbar-menu .sm-toggle-textWrap {
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+.navbar-menu .sm-icon {
+  display: none;
+}
+
+.navbar-menu .sm-library-icon {
+  display: inline-flex;
+  width: 1.9rem;
+  height: 1.9rem;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 1.9rem;
+  color: currentColor;
+}
+
+.navbar-menu .sm-library-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  stroke-width: 2.4;
+}
+
+.navbar-menu .sm-mobile-hamburger {
+  display: inline-flex;
+  width: 1.75rem;
+  height: 1.28rem;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.navbar-menu .sm-mobile-hamburger-line {
+  display: block;
+  width: 100%;
+  height: 0.17rem;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.navbar-menu .sm-mobile-hamburger-line:nth-child(2) {
+  width: 72%;
+}
+
+.navbar-menu .sm-panel-item {
+  letter-spacing: 0;
 }
 
 @media (max-width: 1024px) {

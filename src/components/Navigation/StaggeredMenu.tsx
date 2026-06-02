@@ -1,5 +1,6 @@
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import { FiX } from 'react-icons/fi';
 import './StaggeredMenu.css';
 
 export interface StaggeredMenuItem {
@@ -289,6 +290,17 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
           <span ref={iconRef} className="sm-icon" aria-hidden="true">
             <span ref={plusHRef} className="sm-icon-line" />
             <span ref={plusVRef} className="sm-icon-line" />
+          </span>
+          <span className="sm-library-icon" aria-hidden="true">
+            {open ? (
+              <FiX />
+            ) : (
+              <span className="sm-mobile-hamburger">
+                <span className="sm-mobile-hamburger-line" />
+                <span className="sm-mobile-hamburger-line" />
+                <span className="sm-mobile-hamburger-line" />
+              </span>
+            )}
           </span>
         </button>
       </header>

@@ -1,6 +1,16 @@
+:root {
+	--desktop-edge-gutter: 2rem;
+	--site-nav-y: 1rem;
+	--site-nav-gutter: 1rem;
+	--site-nav-control-size: 2.6rem;
+	--site-menu-size: 2.6rem;
+	--site-menu-gap: 1rem;
+	--site-nav-lime: #c6f435;
+}
+
 .site-header {
 	position: fixed;
-	top: 1.5rem;
+	top: 2rem;
 	left: 0;
 	right: 0;
 	z-index: 100;
@@ -18,12 +28,16 @@
 	pointer-events: all;
 }
 
+.nav-logo {
+	display: none;
+}
+
 .nav-cta {
-	opacity: 0;
-	animation: nav-fade-in 0.4s ease 0.7s forwards;
 	display: inline-flex;
 	align-items: center;
 	text-decoration: none;
+	opacity: 0;
+	animation: nav-fade-in 0.4s ease 0.7s forwards;
 	transition: opacity 0.2s;
 }
 
@@ -33,18 +47,18 @@
 
 .nav-cta-bridge {
 	display: block;
-	background: #c6f435;
-	height: 1rem;
 	width: 1rem;
-	margin-left: -0.6rem;
+	height: 1rem;
 	margin-right: -0.6rem;
+	margin-left: -0.6rem;
+	background: var(--site-nav-lime);
 	flex-shrink: 0;
 }
 
 .nav-cta-label {
-	background: #c6f435;
-	color: #111111;
 	border-radius: 999px;
+	background: var(--site-nav-lime);
+	color: #111111;
 	padding: 0.55rem 1.3rem;
 	font-size: 0.85rem;
 	font-weight: 500;
@@ -53,29 +67,145 @@
 
 .nav-cta-arrow {
 	display: inline-flex;
-	align-items: center;
-	justify-content: center;
 	width: 2.2rem;
 	height: 2.2rem;
-	background: #c6f435;
+	align-items: center;
+	justify-content: center;
 	border-radius: 50%;
+	background: var(--site-nav-lime);
 	color: #111111;
 	font-size: 1rem;
 	line-height: 1;
 }
 
+.nav-cta-arrow-icon {
+	display: block;
+	width: 1em;
+	height: 1em;
+	stroke-width: 2.2;
+}
+
 @keyframes nav-fade-in {
 	from {
 		opacity: 0;
+		transform: translateY(-0.35rem);
 	}
 
 	to {
 		opacity: 1;
+		transform: translateY(0);
 	}
 }
 
-@media (max-width: 720px) {
+@media (min-width: 1151px) and (max-width: 1535px) {
+	:root {
+		--desktop-edge-gutter: 1.25rem;
+	}
+
 	.site-header {
-		top: 1rem;
+		top: 1.9rem;
+	}
+
+	.nav-shell {
+		transform: translateY(calc(-0.55rem + 2px));
+	}
+}
+
+@media (max-width: 1150px) {
+	.site-header-mobile {
+		top: var(--site-nav-y);
+		z-index: 120;
+		justify-content: space-between;
+		padding: 0 var(--site-nav-gutter);
+	}
+
+	.site-header-mobile .nav-logo,
+	.site-header-mobile .site-header-actions,
+	.site-header-mobile .nav-cta-magnet {
+		pointer-events: all;
+	}
+
+	.site-header-mobile .nav-logo {
+		display: inline-flex;
+		width: 1.85rem;
+		align-items: center;
+		justify-content: center;
+		margin-top: 0.25rem;
+		color: #111111;
+		text-decoration: none;
+		opacity: 0;
+		animation: nav-fade-in 0.4s ease 0.15s forwards;
+	}
+
+	.site-header-mobile .nav-logo-image {
+		display: block;
+		width: 100%;
+		height: auto;
+		object-fit: contain;
+		transition:
+			filter 220ms ease,
+			transform 220ms ease;
+	}
+
+	.site-header-mobile .nav-logo:hover .nav-logo-image {
+		transform: rotate(-3deg) scale(1.04);
+	}
+
+	.site-header-mobile.is-over-dark .nav-logo-image {
+		filter: invert(1);
+	}
+
+	.site-header-mobile .site-header-actions {
+		position: absolute;
+		top: 0;
+		right: calc(var(--site-nav-gutter) + var(--site-menu-size) + var(--site-menu-gap));
+		display: flex;
+		align-items: center;
+	}
+
+	.site-header-mobile .nav-cta {
+		color: #111111;
+		opacity: 0;
+		animation: nav-fade-in 0.4s ease 0.32s forwards;
+		transition:
+			opacity 180ms ease,
+			transform 220ms ease;
+	}
+
+	.site-header-mobile .nav-cta:hover {
+		opacity: 0.82;
+		transform: translateY(-1px);
+	}
+
+	.site-header-mobile .nav-cta:focus-visible {
+		border-radius: 999px;
+		outline: 2px solid #111111;
+		outline-offset: 5px;
+	}
+
+	.site-header-mobile .nav-cta-bridge {
+		width: 1.1rem;
+		height: calc(var(--site-nav-control-size) * 0.62);
+		margin-right: -0.58rem;
+		margin-left: -0.54rem;
+	}
+
+	.site-header-mobile .nav-cta-label {
+		display: inline-flex;
+		min-height: var(--site-nav-control-size);
+		align-items: center;
+		justify-content: center;
+		padding: 0 0.95rem;
+		font-size: 0.9rem;
+		letter-spacing: 0;
+		line-height: 1;
+		white-space: nowrap;
+	}
+
+	.site-header-mobile .nav-cta-arrow {
+		width: var(--site-nav-control-size);
+		height: var(--site-nav-control-size);
+		flex: 0 0 var(--site-nav-control-size);
+		font-size: 1.05rem;
 	}
 }
