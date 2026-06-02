@@ -1,20 +1,18 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import ExperienceContainer, { experiences } from './ExperienceContainer';
+import RotatingText from './RotatingText';
 import './ExperienceIntro.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function ExperienceIntro() {
-  const wrapperRef   = useRef<HTMLDivElement>(null);
-  const panelRef     = useRef<HTMLDivElement>(null);
-  const frameImgRef  = useRef<HTMLImageElement>(null);
-
-  // One ref slot per card
-  const cardRefs          = useRef<(HTMLElement | null)[]>([null, null, null]);
-  const initializedCards  = useRef<Set<number>>(new Set());
-  const currentActiveCard = useRef<number>(-1);
+  const wrapperRef     = useRef<HTMLDivElement>(null);
+  const panelRef       = useRef<HTMLDivElement>(null);
+  const frameImgRef    = useRef<HTMLImageElement>(null);
+  const periodLayerRef = useRef<HTMLDivElement>(null);
+  const panelIntroRef  = useRef<HTMLDivElement>(null);
 
   const charRefs      = useRef<(HTMLSpanElement | null)[][]>(experiences.map(() => []));
   const prevActiveRef = useRef(0);
@@ -56,85 +54,43 @@ export default function ExperienceIntro() {
     }
   }, [activeExperience]);
 
-  const handleCardRef = useCallback((el: HTMLElement | null, index: number) => {
-    cardRefs.current[index] = el;
-    if (el && !initializedCards.current.has(index)) {
-      initializedCards.current.add(index);
-      el.style.transform = 'translateY(100vh)';
-      el.style.setProperty('--experience-line-progress', '0%');
-
-      el.addEventListener('click', () => {
-        cardRefs.current.forEach((card, i) => {
-          if (!card) return;
-          if (i === index) {
-            card.classList.remove('experience-card--dimmed');
-          } else {
-            card.classList.add('experience-card--dimmed');
-          }
-        });
-        currentActiveCard.current = index;
-      });
-    } else if (!el) {
-      initializedCards.current.delete(index);
-    }
-  }, []);
-
   useEffect(() => {
-    const wrapper = wrapperRef.current;
-    const panel   = panelRef.current;
-    if (!wrapper || !panel) return;
+    const wrapper     = wrapperRef.current;
+    const panel       = panelRef.current;
+    const periodLayer = periodLayerRef.current;
+    const panelIntro  = panelIntroRef.current;
+    const roadmap     = panel?.querySelector<HTMLElement>('.experience-roadmap');
+    if (!wrapper || !panel || !roadmap || !periodLayer || !panelIntro) return;
 
     let currentExperience = 0;
     const proxy = { progress: 0 };
 
     const ctx = gsap.context(() => {
-      // Panel entry
       gsap.fromTo(
         panel,
         { width: '58vw', height: '44vh', minHeight: '44vh', borderRadius: '2.8rem', marginTop: '16vh', y: 140 },
         {
-          width: '100vw', height: '100vh', minHeight: '100vh',
-          borderRadius: 0, marginTop: 0, y: 0, ease: 'none',
+          width: '100vw',
+          height: '100vh',
+          minHeight: '100vh',
+          borderRadius: 0,
+          marginTop: 0,
+          y: 0,
+          ease: 'none',
           scrollTrigger: { trigger: wrapper, start: 'top bottom', end: 'top top', scrub: true },
         }
       );
 
-      // Main scroll proxy — drives cards and background
       gsap.to(proxy, {
         progress: 1,
         ease: 'none',
         onUpdate() {
-          // Cards cascade: each starts 0.18 after the previous, takes 0.3 to arrive
-          experiences.forEach((_, i) => {
-            const el = cardRefs.current[i];
-            if (!el) return;
-            const windowStart = i * 0.18;
-            const rawProg     = Math.max(0, Math.min(1, (proxy.progress - windowStart) / 0.3));
-            // Ease-out cubic for snappy entry
-            const localProg   = 1 - Math.pow(1 - rawProg, 3);
-            el.style.transform = `translateY(${(1 - localProg) * 100}vh)`;
-            el.style.setProperty('--experience-line-progress', `${localProg * 100}%`);
-
-            // When card has fully arrived, dim the previous active card
-            if (rawProg > 0.85 && i > currentActiveCard.current) {
-              const prev = currentActiveCard.current;
-              if (prev >= 0 && cardRefs.current[prev]) {
-                cardRefs.current[prev]!.classList.add('experience-card--dimmed');
-              }
-              currentActiveCard.current = i;
-              el.classList.remove('experience-card--dimmed');
-            }
-          });
-
-          // Background date text
           const totalExpProgress = proxy.progress * experiences.length;
           const next = Math.min(experiences.length - 1, Math.floor(totalExpProgress));
           if (next !== currentExperience) {
             currentExperience = next;
             setActiveExperience(next);
           }
-
-          // Frame image
           if (frameImgRef.current) {
             const frame = Math.max(1, Math.round(proxy.progress * 200));
             frameImgRef.current.src = `/video/frames/frame-${String(frame).padStart(3, '0')}.jpg`;
@@ -143,14 +99,37 @@ export default function ExperienceIntro() {
         scrollTrigger: { trigger: wrapper, start: 'top top', end: 'bottom bottom', scrub: 1 },
       });
 
-      // Panel exit
       gsap.fromTo(
-        panel,
-        { width: '100vw', height: '100vh', minHeight: '100vh', borderRadius: 0, marginTop: 0, y: 0 },
+        roadmap,
+        { y: '0vh' },
         {
-          width: '58vw', height: '44vh', minHeight: '44vh',
-          borderRadius: '2.8rem', marginTop: '16vh', y: 140, ease: 'none',
-          scrollTrigger: { trigger: wrapper, start: 'bottom bottom', end: 'bottom top', scrub: true },
+          y: '-200vh',
+          ease: 'none',
+          scrollTrigger: { trigger: wrapper, start: 'top top', end: 'bottom bottom', scrub: 1 },
+        }
+      );
+
+      // Intro text scrolls up and out
+      gsap.to(panelIntro, {
+        y: '-18vh',
+        opacity: 0,
+        ease: 'none',
+        scrollTrigger: { trigger: wrapper, start: 'top top', end: '20% bottom', scrub: true },
+      });
+
+      // Date rises from below title to top, then sticks
+      gsap.fromTo(
+        periodLayer,
+        { y: '16vh' },
+        {
+          y: 0,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: wrapper,
+            start: 'top top',
+            end: 'bottom bottom',
+            scrub: 1.4,
+          },
         }
       );
     }, wrapper);
@@ -159,7 +138,7 @@ export default function ExperienceIntro() {
   }, []);
 
   return (
-    <div ref={wrapperRef} className="experience-scroll-wrapper">
+    <div ref={wrapperRef} id="experience" className="experience-scroll-wrapper">
       <section className="experience-intro" aria-label="Experience">
         <div className="experience-intro-bg" />
 
@@ -168,8 +147,19 @@ export default function ExperienceIntro() {
           {/* Frame image */}
           <img ref={frameImgRef} src="/video/frames/frame-001.jpg" className="experience-frame-bg" aria-hidden="true" alt="" />
 
-          {/* Background date text — top of panel */}
-          <div className="experience-period-layer" aria-hidden="true">
+          {/* Intro header — scrolls out on scroll */}
+          <div ref={panelIntroRef} className="experience-panel-intro">
+            <p className="experience-panel-kicker">Experience</p>
+            <h2 className="experience-panel-heading">
+              Built through projects, iteration, and <RotatingText words={['craft', 'code', 'motion', 'systems', 'ideas']} />.
+            </h2>
+          </div>
+
+          {/* Roadmap — behind date layer */}
+          <ExperienceContainer activeIndex={activeExperience} />
+
+          {/* Date text — rendered last so it paints on top of roadmap */}
+          <div ref={periodLayerRef} className="experience-period-layer" aria-hidden="true">
             {experiences.map((exp, i) => (
               <div key={i} className="experience-period">
                 {exp.bgLabel.split('').map((ch, j) => (
@@ -188,7 +178,6 @@ export default function ExperienceIntro() {
             ))}
           </div>
 
-          <ExperienceContainer onCardRef={handleCardRef} />
         </div>
       </section>
     </div>

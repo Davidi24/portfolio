@@ -1,11 +1,40 @@
+/* ── Panel intro (inside dark panel, stays at top) ──────── */
+.experience-panel-intro {
+	position: absolute;
+	top: clamp(2.5rem, 5vh, 4rem);
+	left: clamp(2rem, 4vw, 5rem);
+	z-index: 4;
+	pointer-events: none;
+}
+
+.experience-panel-kicker {
+	margin: 0 0 0.75rem;
+	font-size: 0.72rem;
+	font-weight: 600;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.35);
+}
+
+.experience-panel-heading {
+	margin: 0;
+	font-size: clamp(1.6rem, 3vw, 3rem);
+	font-weight: 300;
+	line-height: 1.1;
+	letter-spacing: -0.01em;
+	color: #ffffff;
+	max-width: 55vw;
+}
+
+/* ── Scroll wrapper ──────────────────────────────────────── */
 .experience-scroll-wrapper {
 	position: relative;
-	height: 48000px;
+	height: 300vh;
 }
 
 @media (max-width: 720px) {
 	.experience-scroll-wrapper {
-		height: 32000px;
+		height: 300vh;
 	}
 }
 
@@ -32,6 +61,10 @@
 /* Panel that expands from card to fullscreen */
 .experience-intro-panel {
 	position: relative;
+	isolation: isolate;
+	width: 100vw;
+	height: 100vh;
+	min-height: 100vh;
 	background: #0e0e0e;
 	overflow: hidden;
 	display: flex;
@@ -39,7 +72,6 @@
 	justify-content: center;
 	flex-shrink: 0;
 }
-
 
 /* Frame image */
 .experience-frame-bg {
@@ -49,20 +81,21 @@
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
-	opacity: 0.01;
+	opacity: 0.007;
 	pointer-events: none;
 }
 
-/* Large background period text */
+/* Large background period text — rises over roadmap on scroll */
 .experience-period-layer {
 	position: absolute;
 	inset: 0;
-	z-index: 0;
+	z-index: 30;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	pointer-events: none;
 	overflow: hidden;
+	background: transparent;
 }
 
 .experience-period {
@@ -79,11 +112,12 @@
 }
 
 .experience-period-char {
+	position: relative;
+	z-index: 1;
 	display: inline-block;
 	font-size: clamp(3.2rem, 8vw, 12rem);
 	font-weight: 800;
 	letter-spacing: -0.01em;
-	color: rgba(255, 255, 255, 0.07);
+	color: #1f1f1f;
 	will-change: transform, opacity;
 }
-
