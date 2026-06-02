@@ -1,13 +1,19 @@
+import { FiArrowUpRight } from 'react-icons/fi';
 import CardSwap, { Card } from "./CardSwap";
 import './About.css';
 
 export default function AboutMe() {
   return (
     <section id="about" className="about-section">
+      <div className="about-inner">
       <div className="about-content">
         <p className="about-kicker">About Me</p>
         <h2>
-          I'm David, a full stack developer crafting fast, scalable, and immersive digital experiences.
+          <span className="about-title-line">I'm David, a software</span>
+          <span className="about-title-line">engineer turning complex</span>
+          <span className="about-title-line">ideas into software that</span>
+          <span className="about-title-line">feels simple, powerful,</span>
+          <span className="about-title-line">and worth using.</span>
         </h2>
 
         <div className="about-stats">
@@ -25,7 +31,9 @@ export default function AboutMe() {
         <a href="#contact" className="about-cta" aria-label="Go to contact section">
           <span className="about-cta-label">About Me</span>
           <span className="about-cta-bridge" />
-          <span className="about-cta-arrow">↗</span>
+          <span className="about-cta-arrow" aria-hidden="true">
+            <FiArrowUpRight className="about-cta-arrow-icon" />
+          </span>
         </a>
       </div>
 
@@ -33,8 +41,8 @@ export default function AboutMe() {
 
       <div className="about-cards">
         <CardSwap
-          width={760}
-          height={500}
+          width="var(--about-card-width)"
+          height="var(--about-card-height)"
           cardDistance={96}
           verticalDistance={112}
           delay={4200}
@@ -78,6 +86,7 @@ export default function AboutMe() {
           </Card>
         </CardSwap>
       </div>
+      </div>{/* end about-inner */}
     </section>
   );
 }
