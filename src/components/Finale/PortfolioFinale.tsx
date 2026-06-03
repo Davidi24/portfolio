@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './PortfolioFinale.css';
@@ -80,8 +80,26 @@ const socials = [
 type Project = (typeof projects)[number];
 
 function WorkFolder({ project }: { project: Project }) {
+  const [state, setState] = useState<'idle' | 'open' | 'force-closed'>('idle');
+
+  const handleClick = () =>
+    setState(s => s === 'open' ? 'force-closed' : 'open');
+
+  const handleMouseLeave = () => {
+    if (state === 'force-closed') setState('idle');
+  };
+
   return (
-    <div className="work-folder" role="button" tabIndex={0} aria-label={`${project.title} image folder`}>
+    <div
+      className={`work-folder${state === 'open' ? ' is-open' : state === 'force-closed' ? ' is-force-closed' : ''}`}
+      role="button"
+      tabIndex={0}
+      aria-label={`${project.title} image folder`}
+      aria-expanded={state === 'open'}
+      onClick={handleClick}
+      onMouseLeave={handleMouseLeave}
+      onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && handleClick()}
+    >
       <div className="work-folder-back" />
       <div className="work-folder-tab">
         <span>{project.index}</span>
@@ -106,6 +124,10 @@ function WorkFolder({ project }: { project: Project }) {
 
 export default function PortfolioFinale() {
   const sectionRef = useRef<HTMLElement>(null);
+
+  useLayoutEffect(() => {
+    gsap.set('.work-title span', { yPercent: 112 });
+  }, []);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -145,24 +167,25 @@ export default function PortfolioFinale() {
         }
       );
 
-      gsap.fromTo(
-        '.work-project',
-        { opacity: 0, y: 54, scale: 0.985, clipPath: 'inset(8% 0% 8% 0% round 0.6rem)' },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          clipPath: 'inset(0% 0% 0% 0% round 0.6rem)',
-          stagger: 0.1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: '.work-projects',
-            start: 'top 78%',
-            end: 'top 32%',
-            scrub: 0.65,
-          },
-        }
-      );
+      gsap.utils.toArray<HTMLElement>('.work-project').forEach((card) => {
+        const children = Array.from(card.children);
+        gsap.fromTo(
+          children,
+          { opacity: 0, y: 18 },
+          {
+            opacity: 1,
+            y: 0,
+            stagger: 0.1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 92%',
+              end: 'top 58%',
+              scrub: 0.6,
+            },
+          }
+        );
+      });
 
       gsap.fromTo(
         '.finale-reveal',
