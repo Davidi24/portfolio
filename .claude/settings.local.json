@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx astro *)"
+      "Bash(npx astro *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\kecid\\.claude"
     ]
   }
 }
