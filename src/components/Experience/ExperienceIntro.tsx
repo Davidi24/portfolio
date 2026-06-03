@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import ExperienceContainer, { experiences } from './ExperienceContainer';
-import RotatingText from './RotatingText';
 import './ExperienceIntro.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -10,13 +9,13 @@ gsap.registerPlugin(ScrollTrigger);
 export default function ExperienceIntro() {
   const wrapperRef     = useRef<HTMLDivElement>(null);
   const panelRef       = useRef<HTMLDivElement>(null);
-  const frameImgRef    = useRef<HTMLImageElement>(null);
   const periodLayerRef = useRef<HTMLDivElement>(null);
   const panelIntroRef  = useRef<HTMLDivElement>(null);
 
   const charRefs      = useRef<(HTMLSpanElement | null)[][]>(experiences.map(() => []));
   const prevActiveRef = useRef(0);
   const [activeExperience, setActiveExperience] = useState(0);
+  const [revealedExperience, setRevealedExperience] = useState(-1);
 
   // Init background date chars
   useEffect(() => {
@@ -63,21 +62,129 @@ export default function ExperienceIntro() {
     if (!wrapper || !panel || !roadmap || !periodLayer || !panelIntro) return;
 
     let currentExperience = 0;
+    let currentRevealedExperience = -1;
     const proxy = { progress: 0 };
 
     const ctx = gsap.context(() => {
+      const experienceScrollDistance = () => Math.round(window.innerHeight * 2);
+      const getSmallPanelState = () => {
+        if (window.innerWidth <= 620) {
+          return {
+            width: '86vw',
+            height: '50vh',
+            minHeight: '50vh',
+            borderRadius: 0,
+            y: 90,
+            scaleX: 1,
+            scaleY: 1,
+          };
+        }
+
+        if (window.innerWidth <= 980) {
+          return {
+            width: '76vw',
+            height: '48vh',
+            minHeight: '48vh',
+            borderRadius: 0,
+            y: 110,
+            scaleX: 1,
+            scaleY: 1,
+          };
+        }
+
+        if (window.innerWidth <= 1400) {
+          return {
+            width: '66vw',
+            height: '46vh',
+            minHeight: '46vh',
+            borderRadius: 0,
+            y: 130,
+            scaleX: 1,
+            scaleY: 1,
+          };
+        }
+
+        return {
+          width: '58vw',
+          height: '44vh',
+          minHeight: '44vh',
+          borderRadius: 0,
+          y: 140,
+          scaleX: 1,
+          scaleY: 1,
+        };
+      };
+      const smallPanelState = getSmallPanelState();
+      const fullPanelState = {
+        width: '100vw',
+        height: '100vh',
+        minHeight: '100vh',
+        borderRadius: 0,
+        y: 0,
+        scaleX: 1,
+        scaleY: 1,
+      };
+      const topExitPanelState = {
+        ...smallPanelState,
+        y: 0,
+      };
+      const roadmapTrack = roadmap.querySelector<HTMLElement>('.experience-roadmap-track');
+      const roadmapRouteFirstPath = roadmap.querySelector<SVGPathElement>('.experience-roadmap-route-path--first');
+      const roadmapRouteThirdPath = roadmap.querySelector<SVGPathElement>('.experience-roadmap-route-path--third');
+      const roadmapCards = gsap.utils.toArray<HTMLElement>('.experience-roadmap-card', roadmap);
+      const clampOpacity = gsap.utils.clamp(0, 1);
+      const updateRoadmapCardOpacity = () => {
+        const fadeEnd = -window.innerHeight * 0.07;
+        const fadeStart = window.innerHeight * 0.22;
+
+        roadmapCards.forEach((card) => {
+          const top = card.getBoundingClientRect().top;
+          const progress = clampOpacity((top - fadeEnd) / (fadeStart - fadeEnd));
+          const opacity = progress * progress * (3 - 2 * progress);
+          card.style.opacity = String(opacity);
+        });
+
+        if (roadmapTrack) {
+          const trackTop = roadmapTrack.getBoundingClientRect().top;
+          roadmapTrack.style.setProperty(
+            '--roadmap-line-fade-end',
+            `${Math.max(0, fadeEnd - trackTop)}px`
+          );
+          roadmapTrack.style.setProperty(
+            '--roadmap-line-fade-start',
+            `${Math.max(1, fadeStart - trackTop)}px`
+          );
+        }
+      };
+
       gsap.fromTo(
         panel,
-        { width: '58vw', height: '44vh', minHeight: '44vh', borderRadius: '2.8rem', marginTop: '16vh', y: 140 },
+        smallPanelState,
         {
-          width: '100vw',
-          height: '100vh',
-          minHeight: '100vh',
-          borderRadius: 0,
-          marginTop: 0,
-          y: 0,
+          ...fullPanelState,
           ease: 'none',
-          scrollTrigger: { trigger: wrapper, start: 'top bottom', end: 'top top', scrub: true },
+          scrollTrigger: {
+            trigger: wrapper,
+            start: 'top bottom',
+            end: 'top top',
+            scrub: true,
+          },
+        }
+      );
+
+      gsap.fromTo(
+        panel,
+        fullPanelState,
+        {
+          ...topExitPanelState,
+          ease: 'none',
+          immediateRender: false,
+          scrollTrigger: {
+            trigger: wrapper,
+            start: 'bottom bottom',
+            end: 'bottom top',
+            scrub: true,
+          },
         }
       );
 
@@ -87,16 +194,30 @@ export default function ExperienceIntro() {
         onUpdate() {
           const totalExpProgress = proxy.progress * experiences.length;
           const next = Math.min(experiences.length - 1, Math.floor(totalExpProgress));
+          const revealedNext = proxy.progress <= 0.001 ? -1 : next;
           if (next !== currentExperience) {
             currentExperience = next;
             setActiveExperience(next);
           }
-          if (frameImgRef.current) {
-            const frame = Math.max(1, Math.round(proxy.progress * 200));
-            frameImgRef.current.src = `/video/frames/frame-${String(frame).padStart(3, '0')}.jpg`;
+          if (revealedNext !== currentRevealedExperience) {
+            currentRevealedExperience = revealedNext;
+            setRevealedExperience(revealedNext);
+          }
+          roadmapTrack?.style.setProperty('--roadmap-fill', `${proxy.progress * 100}%`);
+          if (roadmapRouteFirstPath) {
+            roadmapRouteFirstPath.style.strokeDashoffset = String(1 - Math.min(1, proxy.progress * 1.65));
+          }
+          if (roadmapRouteThirdPath) {
+            const thirdRouteProgress = Math.max(0, Math.min(1, (proxy.progress - 0.56) / 0.34));
+            roadmapRouteThirdPath.style.strokeDashoffset = String(1 - thirdRouteProgress);
           }
         },
-        scrollTrigger: { trigger: wrapper, start: 'top top', end: 'bottom bottom', scrub: 1 },
+        scrollTrigger: {
+          trigger: wrapper,
+          start: 'top top',
+          end: () => `+=${experienceScrollDistance()}`,
+          scrub: 1,
+        },
       });
 
       gsap.fromTo(
@@ -105,33 +226,32 @@ export default function ExperienceIntro() {
         {
           y: '-200vh',
           ease: 'none',
-          scrollTrigger: { trigger: wrapper, start: 'top top', end: 'bottom bottom', scrub: 1 },
-        }
-      );
-
-      // Intro text scrolls up and out
-      gsap.to(panelIntro, {
-        y: '-18vh',
-        opacity: 0,
-        ease: 'none',
-        scrollTrigger: { trigger: wrapper, start: 'top top', end: '20% bottom', scrub: true },
-      });
-
-      // Date rises from below title to top, then sticks
-      gsap.fromTo(
-        periodLayer,
-        { y: '16vh' },
-        {
-          y: 0,
-          ease: 'none',
+          onUpdate: updateRoadmapCardOpacity,
           scrollTrigger: {
             trigger: wrapper,
             start: 'top top',
-            end: 'bottom bottom',
-            scrub: 1.4,
+            end: () => `+=${experienceScrollDistance()}`,
+            scrub: 1,
           },
         }
       );
+
+      updateRoadmapCardOpacity();
+
+      // Header scrolls out while the date settles into its sticky top position.
+      const introTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: wrapper,
+          start: 'top top',
+          end: () => `+=${Math.round(window.innerHeight * 0.34)}`,
+          scrub: true,
+        },
+      });
+
+      introTimeline
+        .to(panelIntro, { y: -420, ease: 'none' }, 0)
+        .fromTo(periodLayer, { y: 76 }, { y: 0, ease: 'none' }, 0);
+
     }, wrapper);
 
     return () => ctx.revert();
@@ -144,38 +264,44 @@ export default function ExperienceIntro() {
 
         <div ref={panelRef} className="experience-intro-panel">
 
-          {/* Frame image */}
-          <img ref={frameImgRef} src="/video/frames/frame-001.jpg" className="experience-frame-bg" aria-hidden="true" alt="" />
-
           {/* Intro header — scrolls out on scroll */}
           <div ref={panelIntroRef} className="experience-panel-intro">
             <p className="experience-panel-kicker">Experience</p>
-            <h2 className="experience-panel-heading">
-              Built through projects, iteration, and <RotatingText words={['craft', 'code', 'motion', 'systems', 'ideas']} />.
-            </h2>
           </div>
 
           {/* Roadmap — behind date layer */}
-          <ExperienceContainer activeIndex={activeExperience} />
+          <ExperienceContainer activeIndex={revealedExperience} />
 
           {/* Date text — rendered last so it paints on top of roadmap */}
           <div ref={periodLayerRef} className="experience-period-layer" aria-hidden="true">
-            {experiences.map((exp, i) => (
-              <div key={i} className="experience-period">
-                {exp.bgLabel.split('').map((ch, j) => (
-                  <span
-                    key={j}
-                    className="experience-period-char"
-                    ref={(el) => {
-                      if (!charRefs.current[i]) charRefs.current[i] = [];
-                      charRefs.current[i][j] = el;
-                    }}
-                  >
-                    {ch === ' ' ? ' ' : ch}
+            {experiences.map((exp, i) => {
+              const sepIdx = exp.bgLabel.indexOf(' - ');
+              const leftPart      = sepIdx >= 0 ? exp.bgLabel.slice(0, sepIdx) : exp.bgLabel;
+              const rightPart     = sepIdx >= 0 ? exp.bgLabel.slice(sepIdx + 3) : '';
+              const dashCharIdx   = sepIdx + 1;
+              const rightStartIdx = sepIdx + 3;
+              return (
+                <div key={i} className="experience-period">
+                  <div className="experience-period-left">
+                    {leftPart.split('').map((ch, j) => (
+                      <span key={j} className="experience-period-char" ref={(el) => { if (!charRefs.current[i]) charRefs.current[i] = []; charRefs.current[i][j] = el; }}>
+                        {ch}
+                      </span>
+                    ))}
+                  </div>
+                  <span className="experience-period-char" ref={(el) => { if (!charRefs.current[i]) charRefs.current[i] = []; charRefs.current[i][dashCharIdx] = el; }}>
+                    -
                   </span>
-                ))}
-              </div>
-            ))}
+                  <div className="experience-period-right">
+                    {rightPart.split('').map((ch, j) => (
+                      <span key={j} className="experience-period-char" ref={(el) => { if (!charRefs.current[i]) charRefs.current[i] = []; charRefs.current[i][rightStartIdx + j] = el; }}>
+                        {ch}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
         </div>

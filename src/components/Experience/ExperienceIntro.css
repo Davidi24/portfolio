@@ -1,35 +1,42 @@
 /* ── Panel intro (inside dark panel, stays at top) ──────── */
 .experience-panel-intro {
 	position: absolute;
-	top: clamp(2.5rem, 5vh, 4rem);
-	left: clamp(2rem, 4vw, 5rem);
+	top: 56px;
+	left: 50%;
 	z-index: 4;
+	width: min(72rem, calc(100vw - 3rem));
+	transform: translateX(-50%);
 	pointer-events: none;
+	text-align: center;
 }
 
 .experience-panel-kicker {
-	margin: 0 0 0.75rem;
-	font-size: 0.72rem;
-	font-weight: 600;
+	margin: 0;
+	font-size: 0.78rem;
+	font-weight: 800;
 	letter-spacing: 0.18em;
 	text-transform: uppercase;
-	color: rgba(255, 255, 255, 0.35);
+	color: #c6f435;
 }
 
 .experience-panel-heading {
-	margin: 0;
-	font-size: clamp(1.6rem, 3vw, 3rem);
-	font-weight: 300;
-	line-height: 1.1;
-	letter-spacing: -0.01em;
+	max-width: 68rem;
+	margin: 0 auto;
 	color: #ffffff;
-	max-width: 55vw;
+	font-size: clamp(2.4rem, 5.8vw, 6.8rem);
+	font-weight: 520;
+	letter-spacing: 0;
+	line-height: 0.94;
+	text-wrap: balance;
+	text-shadow: 0 1.4rem 4rem rgba(0, 0, 0, 0.52);
 }
 
 /* ── Scroll wrapper ──────────────────────────────────────── */
 .experience-scroll-wrapper {
 	position: relative;
 	height: 300vh;
+	height: 300svh;
+	height: 300dvh;
 }
 
 @media (max-width: 720px) {
@@ -44,6 +51,8 @@
 	z-index: 3;
 	display: flex;
 	height: 100vh;
+	height: 100svh;
+	height: 100dvh;
 	align-items: flex-start;
 	justify-content: center;
 	overflow: hidden;
@@ -64,25 +73,17 @@
 	isolation: isolate;
 	width: 100vw;
 	height: 100vh;
+	height: 100svh;
+	height: 100dvh;
 	min-height: 100vh;
+	min-height: 100svh;
+	min-height: 100dvh;
 	background: #0e0e0e;
 	overflow: hidden;
 	display: flex;
 	align-items: stretch;
 	justify-content: center;
 	flex-shrink: 0;
-}
-
-/* Frame image */
-.experience-frame-bg {
-	position: absolute;
-	inset: 0;
-	z-index: 0;
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	opacity: 0.007;
-	pointer-events: none;
 }
 
 /* Large background period text — rises over roadmap on scroll */
@@ -100,14 +101,28 @@
 
 .experience-period {
 	position: absolute;
-	top: 2.5rem;
-	left: 50%;
-	transform: translateX(-50%);
-	display: flex;
+	top: 10px;
+	left: 0;
+	right: 0;
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
+	column-gap: clamp(1rem, 3vw, 3rem);
 	align-items: center;
-	justify-content: center;
+	width: 100%;
+	padding-inline: clamp(0.75rem, 2vw, 2rem);
 	clip-path: inset(2% 0 2% 0);
 	line-height: 0.86;
+}
+
+.experience-period-left {
+	display: flex;
+	justify-content: flex-end;
+	white-space: nowrap;
+}
+
+.experience-period-right {
+	display: flex;
+	justify-content: flex-start;
 	white-space: nowrap;
 }
 
@@ -115,9 +130,97 @@
 	position: relative;
 	z-index: 1;
 	display: inline-block;
-	font-size: clamp(3.2rem, 8vw, 12rem);
+	font-size: clamp(1.6rem, 3.8vw, 5.8rem);
 	font-weight: 800;
-	letter-spacing: -0.01em;
-	color: #1f1f1f;
+	letter-spacing: 0;
+	color: rgba(255, 255, 255, 0.7);
 	will-change: transform, opacity;
+}
+
+@media (max-width: 1400px) {
+	.experience-panel-intro {
+		top: 48px;
+		width: min(64rem, calc(100vw - 2.5rem));
+	}
+
+	.experience-period-char {
+		font-size: clamp(1.45rem, 3.8vw, 4.6rem);
+	}
+}
+
+@media (max-width: 980px) {
+	.experience-panel-intro {
+		top: 40px;
+		width: calc(100vw - 2rem);
+	}
+
+	.experience-panel-kicker {
+		font-size: 0.72rem;
+	}
+
+	.experience-period {
+		top: 12px;
+		column-gap: clamp(0.55rem, 2vw, 1.1rem);
+		padding-inline: 0.85rem;
+	}
+
+	.experience-period-char {
+		font-size: clamp(1.25rem, 5.1vw, 3rem);
+	}
+}
+
+@media (max-width: 620px) {
+	.experience-panel-intro {
+		top: 34px;
+		width: calc(100vw - 1.25rem);
+	}
+
+	.experience-panel-kicker {
+		font-size: 0.66rem;
+		letter-spacing: 0.14em;
+	}
+
+	.experience-period {
+		top: 10px;
+		column-gap: 0.34rem;
+		padding-inline: 0.5rem;
+		clip-path: inset(0);
+	}
+
+	.experience-period-char {
+		font-size: clamp(0.95rem, 5.4vw, 1.45rem);
+		letter-spacing: 0;
+	}
+}
+
+@media (max-width: 380px) {
+	.experience-panel-intro {
+		top: 28px;
+	}
+
+	.experience-period {
+		top: 8px;
+		column-gap: 0.25rem;
+		padding-inline: 0.35rem;
+	}
+
+	.experience-period-char {
+		font-size: clamp(0.82rem, 5vw, 1.08rem);
+	}
+}
+
+@media (max-height: 520px) and (orientation: landscape) {
+	.experience-panel-intro {
+		top: 24px;
+	}
+
+	.experience-period {
+		top: 6px;
+		column-gap: 0.4rem;
+		padding-inline: 0.75rem;
+	}
+
+	.experience-period-char {
+		font-size: clamp(0.88rem, 3vw, 1.35rem);
+	}
 }
