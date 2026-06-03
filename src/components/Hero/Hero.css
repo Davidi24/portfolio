@@ -243,22 +243,98 @@
 	transition: opacity 0.3s ease;
 }
 
-.hero-title-i-slideshow {
+.hero-title-i-rotating {
+	position: absolute;
+	inset: 0;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 8%;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.3s ease;
+}
+
+.hero-rotating-text {
+	display: flex;
+	max-width: 100%;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: 0.28em;
+	color: #ffffff;
+	font-size: clamp(0.82rem, 1.95vw, 2.2rem);
+	font-weight: 850;
+	letter-spacing: 0;
+	line-height: 1;
+	text-align: center;
+	text-transform: uppercase;
+	perspective: 700px;
+	user-select: none;
+}
+
+.hero-rotating-text-static {
+	display: inline-block;
+	white-space: nowrap;
+}
+
+.hero-rotating-text-badge {
+	font-size: 1em;
+	font-weight: 850;
+}
+
+.hero-title-i-slideshow,
+.hero-title-i-menu {
 	position: absolute;
 	inset: 0;
 	z-index: 1;
 	width: 100%;
 	height: 100%;
-	display: block;
-	object-fit: cover;
 	opacity: 0;
-	user-select: none;
 	pointer-events: none;
 	transition: opacity 0.35s ease;
 }
 
+.hero-title-i-slideshow {
+	display: block;
+	object-fit: cover;
+	user-select: none;
+}
+
+.hero-title-i-menu {
+	overflow: hidden;
+	background: #000000;
+}
+
+.hero-rotating-menu {
+	--hero-menu-quality-scale: 3;
+	position: relative;
+	width: 100%;
+	height: 100%;
+	animation: hero-media-fade-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.hero-title-i-menu #infinite-grid-menu-canvas {
+	position: absolute;
+	left: calc((1 - var(--hero-menu-quality-scale)) * 50%);
+	top: calc((1 - var(--hero-menu-quality-scale)) * 50%);
+	width: calc(100% * var(--hero-menu-quality-scale));
+	height: calc(100% * var(--hero-menu-quality-scale));
+	transform: scale(calc(1 / var(--hero-menu-quality-scale)));
+	transform-origin: center;
+}
+
+.hero-title-i-menu .action-button,
+.hero-title-i-menu .face-title,
+.hero-title-i-menu .face-description {
+	display: none;
+}
+
 .hero-title-i-focus.is-visible,
-.hero-title-i-slideshow.is-visible {
+.hero-title-i-rotating.is-visible,
+.hero-title-i-slideshow.is-visible,
+.hero-title-i-menu.is-visible {
 	opacity: 1;
 }
 
@@ -289,6 +365,18 @@
 @keyframes hero-fade-in {
 	from { opacity: 0; }
 	to   { opacity: 1; }
+}
+
+@keyframes hero-media-fade-in {
+	0% {
+		opacity: 0;
+		transform: scale(1.01);
+	}
+
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
 }
 
 @media (max-width: 1150px) {

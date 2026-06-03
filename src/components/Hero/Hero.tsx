@@ -4,6 +4,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { FiArrowUpRight } from 'react-icons/fi';
 import TrueFocus from './TrueFocus';
 import GlitchText from './GlitchText';
+import RotatingText from '../Experience/RotatingText';
+// @ts-expect-error React Bits JS-CSS registry item is intentionally installed as JSX.
+import InfiniteMenu from '../ReactBits/InfiniteMenu.jsx';
 import './Hero.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -27,12 +30,70 @@ const socials = [
 ];
 
 const PHRASES = [
-  'What I do',
-  'modern software',
-  'latest technologies',
-  'creative solutions',
-  'scalable systems',
-];
+  { text: 'What I do', mode: 'focus', media: 'photos' },
+  { text: 'modern software', mode: 'rotate', media: 'menu' },
+  { text: 'latest technologies', mode: 'focus', media: 'photos' },
+  { text: 'creative solutions', mode: 'rotate', media: 'photos' },
+] as const;
+
+const ROTATING_PHRASE_DURATION_MS = 2600;
+const PHOTO_MEDIA_DURATION_MS = 3000;
+const PHOTO_FRAME_INTERVAL_MS = 180;
+const MENU_ADVANCES_BEFORE_NEXT = 4;
+const MENU_AUTO_ADVANCE_DELAY_MS = 900;
+const MENU_AUTO_ADVANCE_DURATION_MS = 1200;
+
+interface HeroRotatingPhraseProps {
+  text: string;
+  active: boolean;
+  playKey: number;
+  onComplete: () => void;
+}
+
+function HeroRotatingPhrase({ text, active, playKey, onComplete }: HeroRotatingPhraseProps) {
+  const words = text.split(' ').filter(Boolean);
+  const rotatingWord = words.at(-1) ?? text;
+  const staticText = words.slice(0, -1).join(' ');
+
+  useEffect(() => {
+    if (!active) return;
+
+    const completeTimer = window.setTimeout(() => {
+      onComplete();
+    }, ROTATING_PHRASE_DURATION_MS);
+
+    return () => {
+      window.clearTimeout(completeTimer);
+    };
+  }, [active, onComplete, playKey, text]);
+
+  return (
+    <span className="hero-rotating-text" aria-label={text}>
+      {staticText && <span className="hero-rotating-text-static">{staticText}</span>}
+      <RotatingText
+        key={`${playKey}-${text}`}
+        words={[rotatingWord, rotatingWord]}
+        interval={1400}
+        className="hero-rotating-text-badge"
+      />
+    </span>
+  );
+}
+
+type PhraseMode = (typeof PHRASES)[number]['mode'];
+type MediaMode = (typeof PHRASES)[number]['media'];
+
+const isPhraseMode = (mode: PhraseMode, phraseIndex: number) =>
+  PHRASES[phraseIndex]?.mode === mode;
+
+const isMediaMode = (mode: MediaMode, phraseIndex: number) =>
+  PHRASES[phraseIndex]?.media === mode;
+
+const focusAnimationDurationFor = (phraseIndex: number) =>
+  PHRASES[phraseIndex]?.text === 'latest technologies' ? 0.9 : 0.5;
+
+const focusPauseBetweenAnimationsFor = (phraseIndex: number) =>
+  PHRASES[phraseIndex]?.text === 'latest technologies' ? 0.75 : 0.45;
 
 const heroFrameImages = [
   'https://picsum.photos/id/1015/1600/1000',
@@ -49,6 +110,52 @@ const heroFrameImages = [
   'https://picsum.photos/id/1084/1600/1000',
 ];
 
+const heroMenuItems = [
+  {
+    image: 'https://picsum.photos/seed/test-menu-1/1600/1600?grayscale',
+    link: '#',
+    title: '',
+    description: '',
+  },
+  {
+    image: 'https://picsum.photos/seed/test-menu-2/1600/1600?grayscale',
+    link: '#',
+    title: '',
+    description: '',
+  },
+  {
+    image: 'https://picsum.photos/seed/test-menu-3/1600/1600?grayscale',
+    link: '#',
+    title: '',
+    description: '',
+  },
+  {
+    image: 'https://picsum.photos/seed/test-menu-4/1600/1600?grayscale',
+    link: '#',
+    title: '',
+    description: '',
+  },
+];
+
+interface HeroRotatingMenuProps {
+  onAdvanceComplete: () => void;
+}
+
+function HeroRotatingMenu({ onAdvanceComplete }: HeroRotatingMenuProps) {
+  return (
+    <div className="hero-rotating-menu" aria-hidden="true">
+      <InfiniteMenu
+        items={heroMenuItems}
+        scale={0.9}
+        autoAdvanceDelay={MENU_AUTO_ADVANCE_DELAY_MS}
+        autoAdvanceDuration={MENU_AUTO_ADVANCE_DURATION_MS}
+        onAutoAdvanceComplete={onAdvanceComplete}
+        textureCellSize={1024}
+      />
+    </div>
+  );
+}
+
 export default function Hero() {
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const titleRef    = useRef<HTMLDivElement>(null);
@@ -57,34 +164,62 @@ export default function Hero() {
   const mobileActionsRef = useRef<HTMLDivElement>(null);
   const sequenceStartedRef = useRef(false);
   const forwardCycleCompletedRef = useRef(false);
+  const menuAdvanceCountRef = useRef(0);
   const phraseIndexRef = useRef(0);
   const phraseTimerRef = useRef<number | null>(null);
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [frameIndex, setFrameIndex] = useState(0);
   const [focusActive, setFocusActive] = useState(false);
   const [focusPlayKey, setFocusPlayKey] = useState(0);
-  const [imagesActive, setImagesActive] = useState(false);
+  const [mediaActive, setMediaActive] = useState(false);
   const [glitchActive, setGlitchActive] = useState(false);
 
-  const handleFocusComplete = useCallback(() => {
-    forwardCycleCompletedRef.current = true;
-    setFocusActive(false);
-    setFrameIndex(0);
-    setImagesActive(true);
-
-    phraseTimerRef.current = window.setTimeout(() => {
+  const advanceToNextPhrase = useCallback(() => {
+    if (phraseTimerRef.current !== null) {
+      window.clearTimeout(phraseTimerRef.current);
       phraseTimerRef.current = null;
-      const next = (phraseIndexRef.current + 1) % PHRASES.length;
-      phraseIndexRef.current = next;
-      setPhraseIndex(next);
-      setImagesActive(false);
-      setFocusActive(true);
-      setFocusPlayKey(k => k + 1);
-    }, 3000);
+    }
+
+    const next = (phraseIndexRef.current + 1) % PHRASES.length;
+    phraseIndexRef.current = next;
+    setPhraseIndex(next);
+    forwardCycleCompletedRef.current = false;
+    menuAdvanceCountRef.current = 0;
+    setMediaActive(false);
+    setFocusActive(true);
+    setFocusPlayKey(k => k + 1);
   }, []);
 
+  const handleMenuAdvanceComplete = useCallback(() => {
+    if (!sequenceStartedRef.current || !forwardCycleCompletedRef.current) return;
+    if (!isMediaMode('menu', phraseIndexRef.current)) return;
+
+    menuAdvanceCountRef.current += 1;
+
+    if (menuAdvanceCountRef.current >= MENU_ADVANCES_BEFORE_NEXT) {
+      advanceToNextPhrase();
+    }
+  }, [advanceToNextPhrase]);
+
+  const handlePhraseComplete = useCallback(() => {
+    if (!sequenceStartedRef.current || forwardCycleCompletedRef.current) return;
+
+    forwardCycleCompletedRef.current = true;
+    menuAdvanceCountRef.current = 0;
+    setFocusActive(false);
+    setFrameIndex(0);
+    setMediaActive(true);
+
+    if (isMediaMode('photos', phraseIndexRef.current)) {
+      phraseTimerRef.current = window.setTimeout(() => {
+        phraseTimerRef.current = null;
+        advanceToNextPhrase();
+      }, PHOTO_MEDIA_DURATION_MS);
+    }
+  }, [advanceToNextPhrase]);
+
   useEffect(() => {
-    heroFrameImages.forEach(src => {
+    [...heroFrameImages, ...heroMenuItems.map(item => item.image)].forEach(src => {
       const image = new Image();
       image.src = src;
     });
@@ -104,21 +239,16 @@ export default function Hero() {
   }, []);
 
   useEffect(() => {
-    if (!imagesActive) return;
+    if (!mediaActive || !isMediaMode('photos', phraseIndex)) return;
 
     const frameTimer = window.setInterval(() => {
       setFrameIndex(index => (index + 1) % heroFrameImages.length);
-    }, 180);
-
-    const nudgeTimer = window.setTimeout(() => {
-      window.scrollBy({ top: 160, behavior: 'smooth' });
-    }, 6000);
+    }, PHOTO_FRAME_INTERVAL_MS);
 
     return () => {
       window.clearInterval(frameTimer);
-      window.clearTimeout(nudgeTimer);
     };
-  }, [imagesActive]);
+  }, [mediaActive, phraseIndex]);
 
   useEffect(() => {
     const subtitle = subtitleRef.current;
@@ -245,9 +375,12 @@ export default function Hero() {
         phraseTimerRef.current = null;
       }
       phraseIndexRef.current = 0;
+      forwardCycleCompletedRef.current = false;
+      menuAdvanceCountRef.current = 0;
       setPhraseIndex(0);
       sequenceStartedRef.current = false;
       setFocusActive(false);
+      setMediaActive(false);
       setFrameIndex(0);
     };
 
@@ -256,8 +389,9 @@ export default function Hero() {
 
       sequenceStartedRef.current = true;
       forwardCycleCompletedRef.current = false;
+      menuAdvanceCountRef.current = 0;
       setFrameIndex(0);
-      setImagesActive(false);
+      setMediaActive(false);
       setFocusActive(true);
       setFocusPlayKey(key => key + 1);
     };
@@ -306,7 +440,7 @@ export default function Hero() {
         textShadow: '0 0.06em 0.16em rgba(17, 17, 17, 0.2)',
         duration: 1.8,
         ease: 'power3.out',
-        onReverseComplete: () => setImagesActive(false),
+        onReverseComplete: () => setMediaActive(false),
       }, 0.06)
       .to(iLetter, {
         x: expandedX,
@@ -334,7 +468,7 @@ export default function Hero() {
       })
       .to({}, {
         duration: 0.01,
-        onStart: () => { setImagesActive(false); resetSequence(); },
+        onStart: () => { setMediaActive(false); resetSequence(); },
         onReverseComplete: () => {
           sequenceStartedRef.current = false;
           startFocusSequence();
@@ -372,29 +506,45 @@ export default function Hero() {
             <span className="hero-title-back hero-title-fragment">Eng</span>
             <div ref={iAnchorRef} className="hero-title-i-anchor">
               <div ref={iRef} className="hero-title-i">
-                <div className={`hero-title-i-focus ${focusActive ? 'is-visible' : ''}`}>
+                <div className={`hero-title-i-focus ${focusActive && isPhraseMode('focus', phraseIndex) ? 'is-visible' : ''}`}>
                   <TrueFocus
-                    sentence={PHRASES[phraseIndex]}
-                    active={focusActive}
+                    sentence={PHRASES[phraseIndex].text}
+                    active={focusActive && isPhraseMode('focus', phraseIndex)}
                     playKey={focusPlayKey}
                     cycleCount={1}
-                    onComplete={handleFocusComplete}
+                    onComplete={handlePhraseComplete}
                     blurAmount={4}
                     borderColor="#ffffff"
                     glowColor="rgba(255, 255, 255, 0.58)"
-                    animationDuration={0.5}
-                    pauseBetweenAnimations={0.45}
+                    animationDuration={focusAnimationDurationFor(phraseIndex)}
+                    pauseBetweenAnimations={focusPauseBetweenAnimationsFor(phraseIndex)}
+                  />
+                </div>
+                <div className={`hero-title-i-rotating ${focusActive && isPhraseMode('rotate', phraseIndex) ? 'is-visible' : ''}`}>
+                  <HeroRotatingPhrase
+                    text={PHRASES[phraseIndex].text}
+                    active={focusActive && isPhraseMode('rotate', phraseIndex)}
+                    playKey={focusPlayKey}
+                    onComplete={handlePhraseComplete}
                   />
                 </div>
                 <img
                   src={heroFrameImages[frameIndex]}
                   alt=""
-                  className={`hero-title-i-slideshow ${imagesActive ? 'is-visible' : ''}`}
+                  className={`hero-title-i-slideshow ${mediaActive && isMediaMode('photos', phraseIndex) ? 'is-visible' : ''}`}
                   aria-hidden="true"
                   onError={event => {
                     event.currentTarget.src = heroFrameImages[0];
                   }}
                 />
+                <div className={`hero-title-i-menu ${mediaActive && isMediaMode('menu', phraseIndex) ? 'is-visible' : ''}`}>
+                  {mediaActive && isMediaMode('menu', phraseIndex) && (
+                    <HeroRotatingMenu
+                      key={`hero-menu-${phraseIndex}-${focusPlayKey}`}
+                      onAdvanceComplete={handleMenuAdvanceComplete}
+                    />
+                  )}
+                </div>
               </div>
             </div>
             <span className="hero-title-back hero-title-fragment">neer</span>
