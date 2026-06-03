@@ -12,6 +12,7 @@
 	gap: clamp(3rem, 8vw, 9rem);
 	max-width: 96rem;
 	margin: 0 auto;
+	min-width: 0;
 }
 
 .education-copy {
@@ -35,6 +36,7 @@
 	font-weight: 500;
 	line-height: 0.92;
 	letter-spacing: 0;
+	overflow-wrap: break-word;
 }
 
 .education-lead {
@@ -55,6 +57,7 @@
 	display: grid;
 	grid-template-columns: auto 1fr;
 	gap: clamp(1.2rem, 3vw, 2.5rem);
+	min-width: 0;
 	border: 1px solid #dad7d2;
 	border-radius: 1.4rem;
 	background: #ffffff;
@@ -90,6 +93,7 @@
 	font-weight: 500;
 	line-height: 1;
 	letter-spacing: 0;
+	overflow-wrap: break-word;
 }
 
 .education-card span:not(.education-number) {
@@ -101,19 +105,106 @@
 	line-height: 1.65;
 }
 
-@media (max-width: 980px) {
+@media (max-width: 1180px) {
+	.education-section {
+		min-height: auto;
+		padding-block: clamp(5rem, 10vw, 8rem);
+	}
+
 	.education-inner {
 		grid-template-columns: 1fr;
+		gap: clamp(2rem, 5vw, 3.5rem);
 	}
 
 	.education-copy {
 		position: relative;
 		top: auto;
 	}
+
+	.education-heading {
+		max-width: 46rem;
+		font-size: clamp(2.8rem, 8.2vw, 5.8rem);
+	}
+
+	.education-lead {
+		max-width: 48rem;
+		margin-top: clamp(1.4rem, 3vw, 2.2rem);
+	}
 }
 
 @media (max-width: 720px) {
 	.education-section {
-		padding-inline: 1rem;
+		padding: clamp(4rem, 16vw, 6rem) 1rem;
+	}
+
+	.education-kicker {
+		margin-bottom: 1rem;
+		font-size: 0.72rem;
+		letter-spacing: 0.14em;
+	}
+
+	.education-heading {
+		font-size: clamp(2.4rem, 12vw, 4rem);
+		line-height: 0.98;
+	}
+
+	.education-lead {
+		font-size: clamp(0.98rem, 4vw, 1.12rem);
+		line-height: 1.55;
+	}
+
+	.education-card {
+		gap: 1rem;
+		border-radius: 1rem;
+		padding: clamp(1.15rem, 5vw, 1.7rem);
+	}
+
+	.education-number {
+		width: 2.5rem;
+		height: 2.5rem;
+		font-size: 0.78rem;
+	}
+
+	.education-card h3 {
+		font-size: clamp(1.55rem, 8vw, 2.6rem);
+		line-height: 1.02;
+	}
+
+	.education-card span:not(.education-number) {
+		margin-top: 0.9rem;
+		font-size: 0.94rem;
+		line-height: 1.55;
+	}
+}
+
+@media (max-width: 460px) {
+	.education-inner {
+		gap: 1.6rem;
+	}
+
+	.education-card {
+		grid-template-columns: 1fr;
+		gap: 0.85rem;
+	}
+
+	.education-number {
+		width: 2.35rem;
+		height: 2.35rem;
+	}
+
+	.education-card p {
+		margin-bottom: 0.7rem;
+		font-size: 0.68rem;
+		letter-spacing: 0.12em;
+	}
+}
+
+@media (max-width: 360px) {
+	.education-section {
+		padding-inline: 0.75rem;
+	}
+
+	.education-heading {
+		font-size: clamp(2rem, 12vw, 3rem);
 	}
 }
