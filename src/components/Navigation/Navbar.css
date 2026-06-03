@@ -113,6 +113,7 @@
 
 @media (max-width: 1150px) {
 	.site-header-mobile {
+		position: absolute;
 		top: var(--site-nav-y);
 		z-index: 120;
 		justify-content: space-between;
