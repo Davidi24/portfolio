@@ -1,7 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { FiArrowUpRight } from 'react-icons/fi';
 import CardSwap, { Card } from "./CardSwap";
+import aboutData from '../../data/aboutData.json';
 import './About.css';
+
+gsap.registerPlugin(ScrollTrigger);
+
+const stat1 = aboutData.quickFacts[0];
+const stat2 = aboutData.quickFacts[1];
+const stat1Target = parseInt(stat1.value.replace('+', ''), 10);
+const stat2Target = parseInt(stat2.value.replace('+', ''), 10);
 
 const aboutCards = [
   {
@@ -37,11 +47,40 @@ const aboutCards = [
 ];
 
 export default function AboutMe() {
+  const [statYears, setStatYears] = useState(0);
+  const [statProjects, setStatProjects] = useState(0);
+  const statsRef = useRef<HTMLDivElement>(null);
   const [mobileCardIndex, setMobileCardIndex] = useState(0);
   const [exitingMobileCardIndex, setExitingMobileCardIndex] = useState<number | null>(null);
   const mobileCardIndexRef = useRef(0);
   const mobileCarouselAnimatingRef = useRef(false);
   const mobileExitTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const el = statsRef.current;
+    if (!el) return;
+    const st = ScrollTrigger.create({
+      trigger: el,
+      start: 'top 75%',
+      once: true,
+      onEnter: () => {
+        let y = 0;
+        const yId = window.setInterval(() => {
+          y += 1;
+          setStatYears(y);
+          if (y >= stat1Target) window.clearInterval(yId);
+        }, 120);
+
+        let p = 0;
+        const pId = window.setInterval(() => {
+          p += 1;
+          setStatProjects(p);
+          if (p >= stat2Target) window.clearInterval(pId);
+        }, 120);
+      },
+    });
+    return () => st.kill();
+  }, []);
 
   useEffect(() => {
     mobileCardIndexRef.current = mobileCardIndex;
@@ -78,26 +117,24 @@ export default function AboutMe() {
       <div className="about-content">
         <p className="about-kicker">About Me</p>
         <h2>
-          <span className="about-title-line">I'm David, a software</span>
-          <span className="about-title-line">engineer turning complex</span>
-          <span className="about-title-line">ideas into software that</span>
-          <span className="about-title-line">feels simple, powerful,</span>
-          <span className="about-title-line">and worth using.</span>
+          {aboutData.headingLines.map((line) => (
+            <span key={line} className="about-title-line">{line}</span>
+          ))}
         </h2>
 
-        <div className="about-stats">
+        <div className="about-stats" ref={statsRef}>
           <div className="about-stat">
-            <span className="about-stat-number">+3</span>
-            <span className="about-stat-label">Years of Experience</span>
+            <span className="about-stat-number">+{statYears}</span>
+            <span className="about-stat-label">{stat1.label}</span>
           </div>
           <div className="about-stat-divider" aria-hidden="true" />
           <div className="about-stat">
-            <span className="about-stat-number">+10</span>
-            <span className="about-stat-label">Projects</span>
+            <span className="about-stat-number">+{statProjects}</span>
+            <span className="about-stat-label">{stat2.label}</span>
           </div>
         </div>
 
-        <a href="#contact" className="about-cta" aria-label="Go to contact section">
+        <a href="/about" className="about-cta" aria-label="Open full about me page">
           <span className="about-cta-label">About Me</span>
           <span className="about-cta-bridge" />
           <span className="about-cta-arrow" aria-hidden="true">
