@@ -1,49 +1,20 @@
 import './ExperienceContainer.css';
+import experienceData from '../../data/experienceData.json';
 
-export const experiences = [
-  {
-    bgLabel: 'Jun 2025 - Present',
-    period: 'Jun 2025 - Present',
-    title: 'Full Stack Development',
-    label: 'Product Build',
-    metric: '01',
-    body: 'Building fast product interfaces, backend flows, and polished user journeys with React, TypeScript, Node, and motion systems.',
-    highlights: [
-      'Translate ideas into responsive product interfaces with clear user flows.',
-      'Connect frontend screens to backend logic, APIs, and structured data.',
-      'Keep builds maintainable with reusable components and clean patterns.',
-    ],
-    tools: ['React', 'TypeScript', 'Node', 'UX'],
-  },
-  {
-    bgLabel: 'Jun 2025 - Present',
-    period: 'Jun 2025 - Present',
-    title: 'Interactive Experiences',
-    label: 'Motion Systems',
-    metric: '02',
-    body: 'Designing scroll-led sections, animated components, and smooth interactions that make portfolio and product pages feel alive.',
-    highlights: [
-      'Create scroll transitions, reveal states, and timing that supports the story.',
-      'Balance visual energy with performance and predictable interaction.',
-      'Use animation to guide attention instead of distracting from the content.',
-    ],
-    tools: ['GSAP', 'Lenis', 'Motion', 'Story'],
-  },
-  {
-    bgLabel: 'Jun 2025 - Present',
-    period: 'Jun 2025 - Present',
-    title: 'Scalable Frontend Architecture',
-    label: 'Scale Ready',
-    metric: '03',
-    body: 'Creating reusable components, clean styling patterns, and maintainable structures that are easy to extend.',
-    highlights: [
-      'Organize UI into practical sections, components, and shared styles.',
-      'Improve consistency across layouts, states, spacing, and content rhythm.',
-      'Build with future edits in mind so the portfolio can keep growing.',
-    ],
-    tools: ['Design Systems', 'APIs', 'State', 'Performance'],
-  },
-];
+interface ExperienceItem {
+  slug: string;
+  bgLabel: string;
+  period: string;
+  title: string;
+  label: string;
+  metric: string;
+  body: string;
+  highlights: readonly string[];
+  tools: readonly string[];
+  employmentType?: string;
+}
+
+export const experiences = experienceData.experiences as readonly ExperienceItem[];
 
 interface ExperienceContainerProps {
   activeIndex?: number;
@@ -87,6 +58,9 @@ export default function ExperienceContainer({ activeIndex = -1 }: ExperienceCont
 
           <div className="experience-roadmap-content">
             <h3>{item.title}</h3>
+            {item.employmentType && (
+              <span className="experience-employment-type">{item.employmentType}</span>
+            )}
 
             <ul className="experience-roadmap-highlights">
               {item.highlights.map((highlight) => (
@@ -100,10 +74,6 @@ export default function ExperienceContainer({ activeIndex = -1 }: ExperienceCont
                   <span key={tool}>{tool}</span>
                 ))}
               </div>
-
-              <a className="experience-roadmap-button" href="#projects">
-                View more
-              </a>
             </div>
           </div>
         </article>

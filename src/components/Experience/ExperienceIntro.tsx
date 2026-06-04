@@ -131,28 +131,38 @@ export default function ExperienceIntro() {
       const roadmapTrack = roadmap.querySelector<HTMLElement>('.experience-roadmap-track');
       const roadmapRouteFirstPath = roadmap.querySelector<SVGPathElement>('.experience-roadmap-route-path--first');
       const roadmapRouteThirdPath = roadmap.querySelector<SVGPathElement>('.experience-roadmap-route-path--third');
+      const firstPathMultiplier =
+        window.innerWidth >= 2000 ? 3.35 : window.innerWidth >= 1800 ? 2.1 : 1.65;
+
       const roadmapCards = gsap.utils.toArray<HTMLElement>('.experience-roadmap-card', roadmap);
       const clampOpacity = gsap.utils.clamp(0, 1);
       const updateRoadmapCardOpacity = () => {
-        const fadeEnd = -window.innerHeight * 0.07;
-        const fadeStart = window.innerHeight * 0.22;
+        const isMobile = window.innerWidth <= 980;
 
-        roadmapCards.forEach((card) => {
-          const top = card.getBoundingClientRect().top;
-          const progress = clampOpacity((top - fadeEnd) / (fadeStart - fadeEnd));
-          const opacity = progress * progress * (3 - 2 * progress);
-          card.style.opacity = String(opacity);
-        });
+        if (isMobile) {
+          roadmapCards.forEach((card) => { card.style.opacity = '1'; });
+        } else {
+          const fadeEnd   = -window.innerHeight * 0.07;
+          const fadeStart = window.innerHeight * 0.22;
+          roadmapCards.forEach((card) => {
+            const top = card.getBoundingClientRect().top;
+            const progress = clampOpacity((top - fadeEnd) / (fadeStart - fadeEnd));
+            const opacity = progress * progress * (3 - 2 * progress);
+            card.style.opacity = String(opacity);
+          });
+        }
 
         if (roadmapTrack) {
+          const trackFadeEnd   = -window.innerHeight * 0.07;
+          const trackFadeStart = window.innerHeight * 0.22;
           const trackTop = roadmapTrack.getBoundingClientRect().top;
           roadmapTrack.style.setProperty(
             '--roadmap-line-fade-end',
-            `${Math.max(0, fadeEnd - trackTop)}px`
+            `${Math.max(0, trackFadeEnd - trackTop)}px`
           );
           roadmapTrack.style.setProperty(
             '--roadmap-line-fade-start',
-            `${Math.max(1, fadeStart - trackTop)}px`
+            `${Math.max(1, trackFadeStart - trackTop)}px`
           );
         }
       };
@@ -205,10 +215,10 @@ export default function ExperienceIntro() {
           }
           roadmapTrack?.style.setProperty('--roadmap-fill', `${proxy.progress * 100}%`);
           if (roadmapRouteFirstPath) {
-            roadmapRouteFirstPath.style.strokeDashoffset = String(1 - Math.min(1, proxy.progress * 1.65));
+            roadmapRouteFirstPath.style.strokeDashoffset = String(1 - Math.min(1, proxy.progress * firstPathMultiplier));
           }
           if (roadmapRouteThirdPath) {
-            const thirdRouteProgress = Math.max(0, Math.min(1, (proxy.progress - 0.56) / 0.34));
+            const thirdRouteProgress = Math.max(0, Math.min(1, (proxy.progress - 0.56) / 0.55));
             roadmapRouteThirdPath.style.strokeDashoffset = String(1 - thirdRouteProgress);
           }
         },

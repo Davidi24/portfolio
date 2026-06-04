@@ -130,6 +130,7 @@
 	position: relative;
 	z-index: 1;
 	display: inline-block;
+	white-space: pre;
 	font-size: clamp(1.6rem, 3.8vw, 5.8rem);
 	font-weight: 800;
 	letter-spacing: 0;
