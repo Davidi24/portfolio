@@ -626,6 +626,7 @@ class InfiniteGridMenu {
   onAutoAdvanceComplete = () => {};
   animationFrameId = null;
   destroyed = false;
+  textureCellSize = 512;
 
   constructor(
     canvas,
@@ -645,6 +646,7 @@ class InfiniteGridMenu {
     this.scaleFactor = scale;
     this.AUTO_ADVANCE_DELAY = options.autoAdvanceDelay ?? this.AUTO_ADVANCE_DELAY;
     this.AUTO_ADVANCE_DURATION = options.autoAdvanceDuration ?? this.AUTO_ADVANCE_DURATION;
+    this.textureCellSize = options.textureCellSize ?? this.textureCellSize;
     this.camera.position[2] = 3 * scale;
     this.#init(onInit);
   }
@@ -752,7 +754,7 @@ class InfiniteGridMenu {
     this.atlasSize = Math.ceil(Math.sqrt(itemCount));
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    const cellSize = 512;
+    const cellSize = this.textureCellSize;
 
     canvas.width = this.atlasSize * cellSize;
     canvas.height = this.atlasSize * cellSize;
@@ -1074,7 +1076,8 @@ export default function InfiniteMenu({
   scale = 1.0,
   onAutoAdvanceComplete,
   autoAdvanceDelay,
-  autoAdvanceDuration
+  autoAdvanceDuration,
+  textureCellSize
 }) {
   const canvasRef = useRef(null);
   const [activeItem, setActiveItem] = useState(null);
@@ -1099,7 +1102,7 @@ export default function InfiniteMenu({
         onAutoAdvanceComplete,
         sk => sk.run(),
         scale,
-        { autoAdvanceDelay, autoAdvanceDuration }
+        { autoAdvanceDelay, autoAdvanceDuration, textureCellSize }
       );
     }
 
@@ -1116,7 +1119,7 @@ export default function InfiniteMenu({
       window.removeEventListener('resize', handleResize);
       sketch?.destroy();
     };
-  }, [autoAdvanceDelay, autoAdvanceDuration, items, onAutoAdvanceComplete, scale]);
+  }, [autoAdvanceDelay, autoAdvanceDuration, items, onAutoAdvanceComplete, scale, textureCellSize]);
 
   const handleButtonClick = () => {
     if (!activeItem?.link) return;
