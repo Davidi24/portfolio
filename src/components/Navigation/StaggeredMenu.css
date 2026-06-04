@@ -334,6 +334,26 @@
   letter-spacing: 0;
 }
 
+.adaptive-menu .sm-toggle {
+  background: transparent;
+  color: #FFFFFF;
+}
+
+.adaptive-menu .sm-toggle:hover {
+  opacity: 1;
+}
+
+.adaptive-menu .sm-toggle-textWrap,
+.adaptive-menu .sm-icon,
+.adaptive-menu .sm-library-icon {
+  mix-blend-mode: difference;
+}
+
+.adaptive-menu .sm-icon-line,
+.adaptive-menu .sm-mobile-hamburger-line {
+  background: #FFFFFF;
+}
+
 @media (max-width: 1024px) {
   .staggered-menu-panel { width: 100%; left: 0; right: 0; }
 }

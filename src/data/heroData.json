@@ -59,7 +59,7 @@
         "rotatingWords": ["solutions", "ideas", "experiences"]
       }
     ],
-    "photoFrames": [
+    "photoFrames1": [
       "https://picsum.photos/id/1015/1600/1000",
       "https://picsum.photos/id/1016/1600/1000",
       "https://picsum.photos/id/1025/1600/1000",
@@ -71,7 +71,9 @@
       "https://picsum.photos/id/1074/1600/1000",
       "https://picsum.photos/id/1080/1600/1000",
       "https://picsum.photos/id/1081/1600/1000",
-      "https://picsum.photos/id/1084/1600/1000",
+      "https://picsum.photos/id/1084/1600/1000"
+    ],
+    "photoFrames2": [
       "https://picsum.photos/id/10/1600/1000",
       "https://picsum.photos/id/20/1600/1000",
       "https://picsum.photos/id/30/1600/1000",
@@ -83,7 +85,9 @@
       "https://picsum.photos/id/90/1600/1000",
       "https://picsum.photos/id/100/1600/1000",
       "https://picsum.photos/id/110/1600/1000",
-      "https://picsum.photos/id/120/1600/1000",
+      "https://picsum.photos/id/120/1600/1000"
+    ],
+    "photoFrames3": [
       "https://picsum.photos/id/150/1600/1000",
       "https://picsum.photos/id/160/1600/1000",
       "https://picsum.photos/id/170/1600/1000",

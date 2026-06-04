@@ -90,11 +90,10 @@ const focusAnimationDurationFor = (phraseIndex: number) =>
 const focusPauseBetweenAnimationsFor = (phraseIndex: number) =>
   PHRASES[phraseIndex]?.text === 'latest technologies' ? 0.75 : 0.45;
 
-const allPhotoFrames = heroData.expanded.photoFrames;
 const PHOTO_SETS = [
-  allPhotoFrames.slice(0, 12),
-  allPhotoFrames.slice(12, 24),
-  allPhotoFrames.slice(24, 36),
+  heroData.expanded.photoFrames1,
+  heroData.expanded.photoFrames2,
+  heroData.expanded.photoFrames3,
 ];
 const PHRASE_TO_PHOTO_SET: Record<number, number> = { 0: 0, 2: 1, 3: 2 };
 const heroMenuItems = heroData.expanded.menuItems;
@@ -182,7 +181,7 @@ export default function Hero() {
   }, [advanceToNextPhrase]);
 
   useEffect(() => {
-    [...allPhotoFrames, ...heroMenuItems.map(item => item.image)].forEach(src => {
+    [...PHOTO_SETS.flat(), ...heroMenuItems.map(item => item.image)].forEach(src => {
       const image = new Image();
       image.src = src;
     });

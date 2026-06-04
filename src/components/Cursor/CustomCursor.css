@@ -4,8 +4,9 @@
 	left: 0;
 	width: 52px;
 	height: 52px;
-	border: 1.5px solid #111111;
+	border: 1.5px solid #ffffff;
 	border-radius: 50%;
+	mix-blend-mode: difference;
 	pointer-events: none;
 	z-index: 9999;
 	margin-left: -26px;

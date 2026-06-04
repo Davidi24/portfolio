@@ -14,6 +14,7 @@ export interface GooeyNavProps {
   particleR?: number;
   timeVariance?: number;
   colors?: number[];
+  autoHoverDelay?: number;
 }
 
 const GooeyNav: React.FC<GooeyNavProps> = ({
@@ -24,6 +25,7 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
   particleR = 100,
   timeVariance = 300,
   colors = [1, 2, 3, 1, 2, 3, 1, 4],
+  autoHoverDelay,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLUListElement>(null);
@@ -170,6 +172,49 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
     resizeObserver.observe(containerRef.current);
     return () => resizeObserver.disconnect();
   }, [hoveredIndex]);
+
+  useEffect(() => {
+    if (autoHoverDelay === undefined) return;
+
+    const startId = window.setTimeout(() => {
+      const li = navRef.current?.querySelectorAll('li')[0] as HTMLElement | undefined;
+      if (!li) return;
+
+      setHoveredIndex(0);
+      updateEffectPosition(li);
+
+      if (textRef.current) {
+        textRef.current.classList.remove('active');
+        void textRef.current.offsetWidth;
+        textRef.current.classList.add('active');
+      }
+      if (filterRef.current) {
+        filterRef.current.querySelectorAll('.particle').forEach(p => filterRef.current!.removeChild(p));
+        makeParticles(filterRef.current);
+      }
+
+      const endId = window.setTimeout(() => {
+        clearPendingTimeouts();
+        setHoveredIndex(null);
+        if (textRef.current) {
+          textRef.current.classList.remove('active');
+          textRef.current.style.width = '0';
+          textRef.current.style.height = '0';
+          textRef.current.innerText = '';
+        }
+        if (filterRef.current) {
+          filterRef.current.querySelectorAll('.particle').forEach(p => filterRef.current!.removeChild(p));
+          filterRef.current.classList.remove('active');
+          filterRef.current.style.width = '0';
+          filterRef.current.style.height = '0';
+        }
+      }, 1400);
+
+      return () => window.clearTimeout(endId);
+    }, autoHoverDelay);
+
+    return () => window.clearTimeout(startId);
+  }, []);
 
   return (
     <div className="gooey-nav-container" ref={containerRef}>

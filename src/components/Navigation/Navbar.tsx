@@ -43,6 +43,12 @@ export default function Navbar() {
   );
   const [scrolled, setScrolled] = useState(false);
   const [inDarkSection, setInDarkSection] = useState(false);
+  const [navReady, setNavReady] = useState(false);
+
+  useEffect(() => {
+    const id = window.setTimeout(() => setNavReady(true), 1700);
+    return () => window.clearTimeout(id);
+  }, []);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia(MOBILE_NAV_QUERY);
@@ -82,10 +88,7 @@ export default function Navbar() {
 
   const panelColor = inDarkSection ? MENU_COLORS.white : MENU_COLORS.charcoal;
   const itemColor = inDarkSection ? MENU_COLORS.charcoal : MENU_COLORS.white;
-  const desktopMenuButtonBackground = inDarkSection ? MENU_COLORS.white : MENU_COLORS.charcoal;
-  const desktopMenuButtonColor = inDarkSection ? MENU_COLORS.charcoal : MENU_COLORS.white;
-  const mobileMenuButtonColor = inDarkSection ? MENU_COLORS.white : MENU_COLORS.charcoal;
-  const mobileOpenMenuButtonColor = inDarkSection ? MENU_COLORS.charcoal : MENU_COLORS.white;
+  const adaptiveMenuButtonColor = MENU_COLORS.white;
   const menuLayers = inDarkSection
     ? [
         MENU_COLORS.limeAccent,
@@ -112,7 +115,7 @@ export default function Navbar() {
         </header>
 
         <StaggeredMenu
-          className="navbar-menu"
+          className="navbar-menu adaptive-menu"
           isFixed
           position="right"
           items={staggeredItems}
@@ -121,8 +124,8 @@ export default function Navbar() {
           itemColor={itemColor}
           accentColor={MENU_COLORS.limeAccent}
           menuButtonBackground="transparent"
-          menuButtonColor={mobileMenuButtonColor}
-          openMenuButtonColor={mobileOpenMenuButtonColor}
+          menuButtonColor={adaptiveMenuButtonColor}
+          openMenuButtonColor={adaptiveMenuButtonColor}
           changeMenuColorOnOpen
           displaySocials={false}
           displayItemNumbering
@@ -151,15 +154,16 @@ export default function Navbar() {
           </Magnet>
         )}
 
-        {!scrolled && (
+        {!scrolled && navReady && (
           <div className="nav-shell">
-            <GooeyNav items={gooeyItems} />
+            <GooeyNav items={gooeyItems} autoHoverDelay={1150} />
           </div>
         )}
       </header>
 
       {scrolled && (
         <StaggeredMenu
+          className="adaptive-menu"
           isFixed
           position="right"
           items={staggeredItems}
@@ -167,9 +171,10 @@ export default function Navbar() {
           panelColor={panelColor}
           itemColor={itemColor}
           accentColor={MENU_COLORS.limeAccent}
-          menuButtonBackground={desktopMenuButtonBackground}
-          menuButtonColor={desktopMenuButtonColor}
-          openMenuButtonColor={desktopMenuButtonColor}
+          menuButtonBackground="transparent"
+          menuButtonColor={adaptiveMenuButtonColor}
+          openMenuButtonColor={adaptiveMenuButtonColor}
+          changeMenuColorOnOpen
           displaySocials={false}
           displayItemNumbering
           closeOnClickAway
