@@ -1,0 +1,20 @@
+{
+  "sectionHeading": "Learning that keeps the build sharp.",
+  "image": "/diploma.jpg",
+  "items": [
+    {
+      "label": "Bachelor",
+      "title": "Bachelor Degree",
+      "body": "Core software engineering foundation across programming, databases, web systems, and practical problem solving.",
+      "institution": "Epoka University",
+      "field": "Software Engineering"
+    },
+    {
+      "label": "Master",
+      "title": "Master Degree",
+      "body": "Advanced practice focused on deeper systems thinking, project execution, research, and modern development workflows.",
+      "institution": "TU Chemnitz",
+      "field": "Web Engineering"
+    }
+  ]
+}

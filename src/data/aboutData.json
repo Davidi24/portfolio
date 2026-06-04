@@ -1,0 +1,64 @@
+{
+  "name": "David Keci",
+  "headingLines": [
+    "I'm David, a software",
+    "engineer turning complex",
+    "ideas into software that",
+    "feels simple, powerful,",
+    "and worth using."
+  ],
+  "role": "Software Engineer",
+  "photo": {
+    "src": "/me.png",
+    "alt": "David Keci portrait"
+  },
+  "email": "kecidavid22@gmail.com",
+  "links": [
+    {
+      "label": "GitHub",
+      "href": "https://github.com/Davidi24"
+    },
+    {
+      "label": "LinkedIn",
+      "href": "https://linkedin.com/in/david-keci-917712274/"
+    }
+  ],
+  "description": [
+    "I am a software engineer focused on turning complex product ideas into reliable, intuitive applications. My work sits across frontend systems, backend services, and interaction design, with a strong preference for interfaces that feel fast, clear, and carefully finished.",
+    "On the frontend, I work with React, Next.js, TypeScript, Tailwind, Redux, Zustand, Vite, GSAP, and performance-minded rendering patterns. On the backend, I build with Spring Boot, Express.js, Python, REST, GraphQL, WebSockets, authentication flows, queues, and database-driven systems.",
+    "My professional experience includes freelance software development and engineering work at AE Distribution, where I built product features, optimized systems, and contributed to microservices architecture. I am currently studying Web Engineering at TU Chemnitz after completing a Software Engineering degree at Epoka University.",
+    "Alongside my studies and professional work, I build production-minded projects including restaurant management software, digital invitation systems, reproducibility tooling, and immersive learning experiences. I care about structure, details, and software that remains pleasant to use after the first impression."
+  ],
+  "quickFacts": [
+    {
+      "value": "+3",
+      "label": "Years building software"
+    },
+    {
+      "value": "+10",
+      "label": "Projects shipped"
+    },
+    {
+      "value": "Software",
+      "label": "Product engineering"
+    }
+  ],
+  "skills": [
+    {
+      "label": "Frontend",
+      "items": ["React", "Next.js", "TypeScript", "Tailwind", "Redux", "Zustand", "Vite", "GSAP", "SEO"]
+    },
+    {
+      "label": "Backend",
+      "items": ["Spring Boot", "Express.js", "Python", "REST", "GraphQL", "WebSockets", "JWT", "OAuth 2.0", "Microservices"]
+    },
+    {
+      "label": "Databases & Tools",
+      "items": ["PostgreSQL", "MySQL", "MongoDB", "Neo4j", "Docker", "GitHub Actions", "Turborepo", "pnpm"]
+    },
+    {
+      "label": "AI",
+      "items": ["Pandas", "NumPy", "LangChain", "RAG", "LLM fine-tuning"]
+    }
+  ]
+}

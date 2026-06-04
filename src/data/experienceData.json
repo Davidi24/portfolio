@@ -1,0 +1,78 @@
+{
+  "header": {
+    "kicker": "Experience",
+    "headingStart": "Designed, built, and shipped",
+    "headingWith": "with",
+    "rotatingWords": ["care ", "precision ", "motion ", "clarity "]
+  },
+  "experiences": [
+    {
+      "slug": "freelance-software-developer",
+      "bgLabel": "Aug 2025 - Present",
+      "period": "Aug 2025 - Present",
+      "title": "Freelance Software Developer",
+      "label": "Remote",
+      "metric": "01",
+      "body": "Building a restaurant management system and professional web products using Next.js, Kotlin, Spring Boot, and high-quality UI.",
+      "highlights": [
+        "Building a restaurant management system (POS, KDS, Dashboard) using Next.js, Kotlin, and Spring Boot.",
+        "Developed professional wedding invitation web templates with high-quality UI.",
+        "Deliver full-stack features independently, from data modelling to polished frontend surfaces.",
+        "Keep production builds clean, fast, and ready for real client use from day one."
+      ],
+      "tools": ["Next.js", "Kotlin", "Spring Boot", "TypeScript", "Docker", "Spring Security", "JWT", "CI/CD", "SEO", "UI"],
+      "images": ["/video/frames/frame-026.jpg", "/video/frames/frame-055.jpg", "/video/frames/frame-087.jpg"],
+      "description": [
+        "Working as a freelance software developer, I build full-stack products from design to deployment. Current focus is on a restaurant management system covering POS, KDS, and dashboard surfaces using Next.js on the frontend and Kotlin with Spring Boot on the backend.",
+        "Alongside the restaurant system, I have developed professional wedding invitation web templates with polished, high-quality UI — delivering production-ready work for real clients.",
+        "This role requires moving fast across the full stack while keeping code clean, interfaces sharp, and products genuinely ready to use."
+      ]
+    },
+    {
+      "slug": "software-engineer-ae-distribution",
+      "bgLabel": "Jul 2022 - Sep 2024",
+      "period": "Jul 2022 - Sep 2024",
+      "title": "Software Engineer",
+      "label": "Tirana, Albania",
+      "metric": "02",
+      "body": "Full-time engineering role building and optimizing a fiscalization system processing millions of records daily with Spring Boot and React.",
+      "highlights": [
+        "Built and optimized a fiscalization system processing millions of records daily using Spring Boot and React, focused on performance.",
+        "Contributed to microservices architecture within a cross-functional Agile team.",
+        "Improved critical data paths and system responsiveness to handle high-volume production load reliably.",
+        "Collaborated across engineering, product, and operations to ship features in regular Agile cycles."
+      ],
+      "employmentType": "Full-time",
+      "tools": ["Spring Boot", "React", "Docker", "Microservices", "PostgreSQL", "Spring Security", "JWT", "CI/CD", "SEO", "Agile"],
+      "images": ["/video/frames/frame-104.jpg", "/video/frames/frame-132.jpg", "/video/frames/frame-166.jpg"],
+      "description": [
+        "At AE Distribution I worked full-time as a software engineer, taking ownership of a fiscalization system that processed millions of records every day. The work demanded a strong focus on performance, reliability, and correctness at scale.",
+        "The stack was built around Spring Boot on the backend and React on the frontend. I optimized critical data paths, improved system responsiveness, and ensured the system remained stable under heavy load.",
+        "I also contributed to the company's microservices architecture as part of a cross-functional Agile team, collaborating across engineering, product, and operations to deliver features and improvements in regular cycles."
+      ]
+    },
+    {
+      "slug": "web-developer-protik",
+      "bgLabel": "Jul 2023 - Oct 2023",
+      "period": "Jul 2023 - Oct 2023",
+      "title": "Web Developer & Event Organizer",
+      "label": "Tirana, Albania",
+      "metric": "03",
+      "body": "Part-time role building and improving website features for startups and representing the company at innovation events.",
+      "highlights": [
+        "Built and improved website features to help startups showcase their growth.",
+        "Represented the company at events, engaging with entrepreneurs and startup stakeholders.",
+        "Translated startup product stories into clear, well-structured web experiences.",
+        "Gained direct exposure to early-stage product thinking and the bridge between tech and business."
+      ],
+      "employmentType": "Part-time",
+      "tools": ["JavaScript", "HTML", "CSS", "Web Dev", "Community"],
+      "images": ["/video/frames/frame-118.jpg", "/video/frames/frame-144.jpg", "/video/frames/frame-192.jpg"],
+      "description": [
+        "At Protik Innovation Center I worked part-time as a web developer and event organizer, contributing to a hub that supports startups and entrepreneurs in Albania.",
+        "On the technical side, I built and improved website features that helped startups present their products and growth stories clearly to investors and partners.",
+        "Beyond development, I represented the company at events, connecting with entrepreneurs and startup stakeholders — giving me a strong sense of how product work and business goals align in early-stage environments."
+      ]
+    }
+  ]
+}
