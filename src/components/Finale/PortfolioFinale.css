@@ -30,12 +30,12 @@
 
 .work-hero {
 	display: grid;
-	grid-template-columns: 0.7fr 1.3fr minmax(15rem, 0.42fr);
-	gap: clamp(1rem, 2.5vw, 3rem);
-	align-items: center;
+	grid-template-columns: minmax(8rem, 0.22fr) minmax(0, 1fr);
+	gap: clamp(1.4rem, 4vw, 5rem);
+	align-items: start;
 	min-height: 0;
-	padding: clamp(0.6rem, 1.2vw, 1.2rem) 0 clamp(0.5rem, 1vw, 1rem);
-	margin-bottom: clamp(0.5rem, 1.1vw, 1rem);
+	padding: clamp(1rem, 2vw, 2rem) 0 clamp(1.3rem, 2.6vw, 2.6rem);
+	margin-bottom: clamp(2rem, 4vw, 4rem);
 }
 
 .work-kicker,
@@ -56,7 +56,12 @@
 
 .work-kicker {
 	grid-column: 1;
-	color: #111111;
+	display: inline-flex;
+	width: fit-content;
+	border-radius: 999px;
+	background: #111111;
+	color: #f5f5f5;
+	padding: 0.62rem 0.82rem;
 }
 
 .work-title {
@@ -67,10 +72,10 @@
 	margin: 0;
 	overflow: hidden;
 	color: #111111;
-	font-size: clamp(3.2rem, 6.2vw, 7.2rem);
-	font-weight: 760;
+	font-size: clamp(2.2rem, 4.5vw, 5.6rem);
+	font-weight: 650;
 	letter-spacing: 0;
-	line-height: 0.88;
+	line-height: 0.9;
 	text-transform: uppercase;
 	overflow-wrap: anywhere;
 }
@@ -81,7 +86,7 @@
 }
 
 .work-hero-copy {
-	display: grid;
+	display: none;
 	gap: 0.95rem;
 	justify-items: start;
 	max-width: 22rem;
@@ -130,6 +135,25 @@
 	box-shadow: 0 1.2rem 3rem rgba(17, 17, 17, 0.14);
 }
 
+.finale-contact-phone {
+	display: inline-flex;
+	width: fit-content;
+	color: #111111;
+	font-size: 0.86rem;
+	font-weight: 850;
+	letter-spacing: 0.04em;
+	line-height: 1.25;
+	text-decoration: none;
+	text-transform: uppercase;
+	transition: color 220ms ease, transform 220ms ease;
+}
+
+.finale-contact-phone:hover,
+.finale-contact-phone:focus-visible {
+	color: #c6f435;
+	transform: translateX(0.18rem);
+}
+
 .work-projects {
 	display: grid;
 	border-top: 1px solid rgba(17, 17, 17, 0.14);
@@ -138,11 +162,11 @@
 
 .work-project {
 	display: grid;
-	grid-template-columns: 4rem minmax(13rem, 0.9fr) minmax(14rem, 1fr) minmax(9rem, 0.68fr) minmax(11rem, 0.76fr) auto;
+	grid-template-columns: 6.5rem minmax(13rem, 0.9fr) minmax(14rem, 1fr) minmax(9rem, 0.68fr) minmax(11rem, 0.76fr) auto;
 	gap: clamp(0.9rem, 2vw, 2.2rem);
 	align-items: center;
 	min-width: 0;
-	min-height: 13.5rem;
+	min-height: 10rem;
 	border-bottom: 1px solid rgba(17, 17, 17, 0.14);
 	background: transparent;
 	box-shadow: none;
@@ -175,15 +199,17 @@
 }
 
 .work-project-copy h3 {
-	max-width: 13ch;
 	margin: 0;
 	color: #111111;
-	font-size: clamp(1.85rem, 2.9vw, 3.8rem);
+	font-size: clamp(1.3rem, 2vw, 2.6rem);
 	font-weight: 650;
 	letter-spacing: 0;
 	line-height: 0.96;
-	text-wrap: balance;
-	overflow-wrap: anywhere;
+}
+
+.work-title-word {
+	display: block;
+	white-space: nowrap;
 }
 
 .work-project-body {
@@ -675,6 +701,12 @@
 	text-decoration: none;
 }
 
+@media (min-width: 1800px) {
+	.finale-inner {
+		width: min(100%, 110rem);
+	}
+}
+
 @media (max-width: 1460px) {
 	.finale-inner {
 		width: min(100%, 92rem);
@@ -682,7 +714,7 @@
 	}
 
 	.work-project {
-		grid-template-columns: 3.4rem minmax(11rem, 0.82fr) minmax(12rem, 0.95fr) minmax(8rem, 0.6fr) minmax(10rem, 0.64fr) auto;
+		grid-template-columns: 6rem minmax(11rem, 0.82fr) minmax(12rem, 0.95fr) minmax(8rem, 0.6fr) minmax(10rem, 0.64fr) auto;
 		gap: clamp(0.8rem, 1.45vw, 1.55rem);
 	}
 
@@ -1158,8 +1190,8 @@
 		grid-column: 1;
 		grid-row: 3;
 		max-width: 100%;
-		font-size: clamp(0.74rem, 0.9vw, 0.86rem);
-		line-height: 1.45;
+		font-size: clamp(0.92rem, 1.1vw, 1.05rem);
+		line-height: 1.5;
 	}
 
 	.work-tags {
