@@ -9,6 +9,9 @@ import AboutMe from './components/About/AboutMe';
 import CustomCursor from './components/Cursor/CustomCursor';
 import ExperienceIntro from './components/Experience/ExperienceIntro';
 import PortfolioFinale from './components/Finale/PortfolioFinale';
+import AboutPage from './pages/AboutPage';
+import ProjectDetailPage from './pages/ProjectDetailPage';
+import ExperienceDetailPage from './pages/ExperienceDetailPage';
 
 const InfiniteMenuTestPage = lazy(() => import('./pages/InfiniteMenuTestPage'));
 
@@ -48,6 +51,18 @@ function PortfolioHome() {
 }
 
 export default function App() {
+  if (window.location.pathname === '/about') {
+    return <AboutPage />;
+  }
+
+  if (window.location.pathname.startsWith('/work/')) {
+    return <ProjectDetailPage />;
+  }
+
+  if (window.location.pathname.startsWith('/experience/')) {
+    return <ExperienceDetailPage />;
+  }
+
   const isInfiniteMenuTest =
     window.location.pathname === '/test' ||
     window.location.pathname === '/infinite-menu-test';
