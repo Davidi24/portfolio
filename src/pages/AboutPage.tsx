@@ -13,10 +13,10 @@ export default function AboutPage() {
     <main className="about-page">
       <CustomCursor />
 
-      <a className="about-page-back" href="/#home" aria-label="Back to home">
+      <button className="about-page-back" onClick={() => history.back()} aria-label="Back to home">
         <FiArrowLeft aria-hidden="true" />
         <span>Back to home</span>
-      </a>
+      </button>
 
       <section className="about-page-shell" aria-labelledby="about-page-title">
         <aside className="about-page-portrait" aria-label={aboutData.photo.alt}>
