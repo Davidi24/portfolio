@@ -3,16 +3,16 @@
   "image": "/diploma.jpg",
   "items": [
     {
-      "label": "Bachelor",
+      "label": "Software Engineering",
       "title": "Bachelor Degree",
-      "body": "Core software engineering foundation across programming, databases, web systems, and practical problem solving.",
+      "body": "Completed at Epoka University — where the engineering mindset was built, the fundamentals were made solid, and the discipline to ship real software began.",
       "institution": "Epoka University",
       "field": "Software Engineering"
     },
     {
-      "label": "Master",
+      "label": "Web Engineering",
       "title": "Master Degree",
-      "body": "Advanced practice focused on deeper systems thinking, project execution, research, and modern development workflows.",
+      "body": "Completed at TU Chemnitz University — advanced focus on systems thinking, modern development workflows, and project execution.",
       "institution": "TU Chemnitz",
       "field": "Web Engineering"
     }

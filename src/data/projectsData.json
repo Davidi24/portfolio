@@ -4,15 +4,19 @@
       "slug": "jupyter-reproducibility",
       "index": "01",
       "title": "Notebook Reproducibility",
+      "pageTitle": "Jupyter Notebook Reproducibility",
       "category": "Research Tool",
       "status": "Open Source",
       "body": "Reproducibility pipeline supporting Codeberg, Zenodo, and GitHub with FAIR analysis and AI-based notebook categorization.",
       "tags": ["Python", "RDF/SPARQL", "LLM", "SQLite"],
-      "images": ["/video/frames/frame-022.jpg", "/video/frames/frame-040.jpg", "/video/frames/frame-058.jpg"],
+      "links": [
+        { "label": "GitHub", "href": "#" }
+      ],
+      "images": ["/projects/1/1.png", "/projects/1/2.png", "/projects/1/3.png"],
       "description": [
         "An extension of a notebook reproducibility pipeline that adds support for Codeberg and Zenodo alongside the existing GitHub integration. The goal is FAIR-compliant analysis across multiple platforms.",
         "The project introduces AI-based categorization of Jupyter notebooks using LLMs, automated metadata extraction, and cross-platform reproducibility checks.",
-        "Built with Python, SQLite for local storage, RDF/SPARQL for semantic queries, and nbformat for notebook parsing — designed as a research-grade open source tool."
+        "The stack uses Python, SQLite for local storage, RDF/SPARQL for semantic queries, and nbformat for notebook parsing — shaped as a research-grade open source tool."
       ],
       "highlights": ["Cross-platform FAIR analysis", "AI-based notebook categorization", "Multi-platform reproducibility pipeline"]
     },
@@ -22,9 +26,12 @@
       "title": "Saporini Italiano",
       "category": "Restaurant Management",
       "status": "In Progress",
-      "body": "Restaurant management software with POS, KDS, and admin dashboard — web, mobile, and desktop via Kotlin Multiplatform.",
+      "body": "POS terminal, KDS, and admin dashboard — Next.js on the web, Spring Boot on the server, and Kotlin Multiplatform for mobile and desktop.",
       "tags": ["Spring Boot", "Kotlin", "Next.js", "PostgreSQL"],
-      "images": ["/video/frames/frame-086.jpg", "/video/frames/frame-104.jpg", "/video/frames/frame-122.jpg"],
+      "links": [
+        { "label": "GitHub", "href": "#" }
+      ],
+      "images": ["/projects/2/2.jpg", "/projects/2/1.jpg", "/projects/2/3.jpg"],
       "description": [
         "A full restaurant management system covering the POS terminal for order taking, a Kitchen Display System for order flow, and an admin dashboard for menu management and analytics.",
         "The web surface is built with Next.js and TypeScript. The backend runs on Spring Boot with PostgreSQL. The monorepo is managed with Turborepo and containerized with Docker.",
@@ -39,11 +46,14 @@
       "category": "Web Platform",
       "status": "Live",
       "body": "Digital wedding invitation platform with professional UI templates and high-quality animations.",
-      "tags": ["Astro", "Next.js", "GSAP", "PostgreSQL"],
-      "images": ["/video/frames/frame-148.jpg", "/video/frames/frame-166.jpg", "/video/frames/frame-184.jpg"],
+      "tags": ["Astro", "Next.js", "GSAP", "Motion"],
+      "links": [
+        { "label": "Live Demo", "href": "#" }
+      ],
+      "images": ["/projects/3/1.jpg", "/projects/3/2.jpg", "/projects/3/3.jpg"],
       "description": [
         "A platform for creating and sharing digital wedding invitations with professional UI templates and smooth, high-quality animations powered by GSAP.",
-        "The frontend is built with Astro and Next.js for fast static and server-rendered pages. The backend uses Express with PostgreSQL for invitation data, guest management, and RSVP tracking.",
+        "Each invitation is crafted with careful attention to motion — entrance sequences, scroll-driven reveals, and transitions that feel premium without being heavy.",
         "The project emphasizes visual quality, ease of customization, and a smooth experience for both invitation creators and their guests."
       ],
       "highlights": ["Professional UI invitation templates", "GSAP-powered animations", "Guest management & RSVP system"]
@@ -56,7 +66,10 @@
       "status": "Research",
       "body": "Immersive German-learning platform with 3D/AR rooms in Three.js and WebXR for contextual language practice.",
       "tags": ["Three.js", "WebXR", "FastAPI", "GraphDB"],
-      "images": ["/video/frames/frame-032.jpg", "/video/frames/frame-118.jpg", "/video/frames/frame-192.jpg"],
+      "links": [
+        { "label": "GitHub", "href": "#" }
+      ],
+      "images": ["/projects/4/1.png", "/projects/4/2.png", "/projects/4/3.png"],
       "description": [
         "An immersive German-learning platform that places learners inside interactive 3D and AR rooms built with Three.js and WebXR — delivering language practice in realistic, contextual environments.",
         "The backend is built with FastAPI and uses both PostgreSQL for relational data and GraphDB with RDF/SPARQL for semantic knowledge graphs that power contextual vocabulary and grammar suggestions.",

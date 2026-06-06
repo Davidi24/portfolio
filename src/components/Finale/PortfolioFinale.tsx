@@ -42,7 +42,7 @@ function WorkFolder({ project }: { project: Project }) {
 
       <div className="work-folder-papers" aria-hidden="true">
         {project.images.map((image, index) => (
-          <figure className="work-folder-paper" key={image}>
+          <figure className="work-folder-paper" key={`${image}-${index}`}>
             <img src={image} alt="" loading="lazy" />
             <figcaption>{String(index + 1).padStart(2, '0')}</figcaption>
           </figure>
