@@ -13,38 +13,7 @@ const stat2 = aboutData.quickFacts[1];
 const stat1Target = parseInt(stat1.value.replace('+', ''), 10);
 const stat2Target = parseInt(stat2.value.replace('+', ''), 10);
 
-const aboutCards = [
-  {
-    kicker: 'About Me',
-    title: 'Full Stack Developer',
-    body: 'I build reliable applications with expressive interfaces, thoughtful systems, and a strong eye for interaction.',
-    className: 'about-card-dark',
-  },
-  {
-    kicker: 'Focus',
-    title: 'Creative Engineering',
-    body: 'I like turning complex ideas into smooth products with React, TypeScript, GSAP, and sharp frontend architecture.',
-    className: 'about-card-lime',
-  },
-  {
-    kicker: 'Process',
-    title: 'Details Matter',
-    body: 'From layout rhythm to motion timing, I care about the small choices that make an experience feel finished.',
-    className: 'about-card-white',
-  },
-  {
-    kicker: 'Approach',
-    title: 'Product Thinking',
-    body: 'I balance clean UX, performance, and maintainable code so ideas can grow without becoming heavy.',
-    className: 'about-card-soft-lime',
-  },
-  {
-    kicker: 'Strength',
-    title: 'Calm Execution',
-    body: 'I move fast with structure, keeping the build focused, polished, and easy to keep improving.',
-    className: 'about-card-cool-gray',
-  },
-];
+const aboutCards = aboutData.cards;
 
 export default function AboutMe() {
   const [statYears, setStatYears] = useState(0);

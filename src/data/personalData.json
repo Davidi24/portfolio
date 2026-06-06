@@ -1,0 +1,26 @@
+{
+  "name": "David Keci",
+  "title": "Software Developer",
+  "email": "kecidavid22@gmail.com",
+  "phone": {
+    "display": "+49 157 54765394",
+    "href": "tel:+4915754765394"
+  },
+  "location": "Tirana, Albania",
+  "socials": {
+    "github": {
+      "label": "GitHub",
+      "href": "https://github.com/Davidi24",
+      "username": "Davidi24"
+    },
+    "linkedin": {
+      "label": "LinkedIn",
+      "href": "https://linkedin.com/in/david-keci-917712274/",
+      "username": "david-keci-917712274"
+    },
+    "whatsapp": {
+      "label": "WhatsApp",
+      "href": "https://wa.me/4915754765394"
+    }
+  }
+}

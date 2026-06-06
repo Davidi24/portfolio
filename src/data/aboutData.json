@@ -24,10 +24,11 @@
     }
   ],
   "description": [
-    "I am a software engineer focused on turning complex product ideas into reliable, intuitive applications. My work sits across frontend systems, backend services, and interaction design, with a strong preference for interfaces that feel fast, clear, and carefully finished.",
-    "On the frontend, I work with React, Next.js, TypeScript, Tailwind, Redux, Zustand, Vite, GSAP, and performance-minded rendering patterns. On the backend, I build with Spring Boot, Express.js, Python, REST, GraphQL, WebSockets, authentication flows, queues, and database-driven systems.",
-    "My professional experience includes freelance software development and engineering work at AE Distribution, where I built product features, optimized systems, and contributed to microservices architecture. I am currently studying Web Engineering at TU Chemnitz after completing a Software Engineering degree at Epoka University.",
-    "Alongside my studies and professional work, I build production-minded projects including restaurant management software, digital invitation systems, reproducibility tooling, and immersive learning experiences. I care about structure, details, and software that remains pleasant to use after the first impression."
+    "When I discovered software, I saw how much impact it can create. It is not only about writing code, but about understanding problems, building useful solutions, and creating digital experiences that make things easier for people.",
+
+    "I graduated in Software Engineering and now specialize in Web Engineering. Through different projects and work experiences, I have developed myself as both a developer and a problem solver. I enjoy working on ideas from the first concept to the final product, combining technical skills, design thinking, and attention to detail.",
+
+    "For me, software is a way to turn knowledge into real solutions. The more I learn, the more I understand how powerful technology can be when it is built with purpose. What makes software different is that it gives you the ability to create something from information, logic, and creativity, then turn it into a product people can actually use. This is what motivates me to keep improving, work on different kinds of projects, and grow with every challenge."
   ],
   "quickFacts": [
     {
@@ -43,18 +44,79 @@
       "label": "Product engineering"
     }
   ],
+  "cards": [
+    {
+      "kicker": "About Me",
+      "title": "Software Engineer",
+      "body": "I like coding, I like being professional, but mostly I like growing.",
+      "className": "about-card-dark"
+    },
+    {
+      "kicker": "Focus",
+      "title": "Creative Engineering",
+      "body": "I am passionate about growing as a software engineer and learning how great products create real impact.",
+      "className": "about-card-lime"
+    },
+    {
+      "kicker": "Process",
+      "title": "Details Matter",
+      "body": "Great products are built from thousands of small right decisions — I care deeply about making each one count.",
+      "className": "about-card-white"
+    },
+    {
+      "kicker": "Approach",
+      "title": "Product Thinking",
+      "body": "I think about software the way a product person would — who uses it, why it matters, and how it scales.",
+      "className": "about-card-soft-lime"
+    },
+    {
+      "kicker": "Strength",
+      "title": "Fast Learner",
+      "body": "I am calm by nature, thrive in collaborative settings, and pick up new technologies faster than most.",
+      "className": "about-card-cool-gray"
+    }
+  ],
   "skills": [
     {
       "label": "Frontend",
-      "items": ["React", "Next.js", "TypeScript", "Tailwind", "Redux", "Zustand", "Vite", "GSAP", "SEO"]
+      "items": [
+        "React",
+        "Next.js",
+        "TypeScript",
+        "Tailwind",
+        "Redux",
+        "Zustand",
+        "Vite",
+        "GSAP",
+        "SEO"
+      ]
     },
     {
       "label": "Backend",
-      "items": ["Spring Boot", "Express.js", "Python", "REST", "GraphQL", "WebSockets", "JWT", "OAuth 2.0", "Microservices"]
+      "items": [
+        "Spring Boot",
+        "Express.js",
+        "Python",
+        "REST",
+        "GraphQL",
+        "WebSockets",
+        "JWT",
+        "OAuth 2.0",
+        "Microservices"
+      ]
     },
     {
       "label": "Databases & Tools",
-      "items": ["PostgreSQL", "MySQL", "MongoDB", "Neo4j", "Docker", "GitHub Actions", "Turborepo", "pnpm"]
+      "items": [
+        "PostgreSQL",
+        "MySQL",
+        "MongoDB",
+        "Neo4j",
+        "Docker",
+        "GitHub Actions",
+        "Turborepo",
+        "pnpm"
+      ]
     },
     {
       "label": "AI",
