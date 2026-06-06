@@ -29,8 +29,7 @@ const PHRASES = heroData.expanded.phrases as readonly HeroPhrase[];
 
 const ROTATING_PHRASE_DURATION_MS = 4300;
 const ROTATING_WORD_INTERVAL_MS = 1500;
-const PHOTO_MEDIA_DURATION_MS = 3000;
-const PHOTO_FRAME_INTERVAL_MS = 180;
+const PHOTO_FRAME_INTERVAL_MS = 300;
 const MENU_ADVANCES_BEFORE_NEXT = 4;
 const MENU_AUTO_ADVANCE_DELAY_MS = 900;
 const MENU_AUTO_ADVANCE_DURATION_MS = 1200;
@@ -124,17 +123,31 @@ export default function Hero() {
   const iRef        = useRef<HTMLDivElement>(null);
   const mobileActionsRef = useRef<HTMLDivElement>(null);
   const sequenceStartedRef = useRef(false);
+  const expandedScrollCueShownRef = useRef(false);
   const forwardCycleCompletedRef = useRef(false);
   const menuAdvanceCountRef = useRef(0);
   const phraseIndexRef = useRef(0);
   const phraseTimerRef = useRef<number | null>(null);
+  const expandedScrollCueStartYRef = useRef<number | null>(null);
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [frameIndex, setFrameIndex] = useState(0);
   const [focusActive, setFocusActive] = useState(false);
+  const slideshowSlotRef = useRef<0 | 1>(0);
+  const [slideshowSrcs, setSlideshowSrcs] = useState<[string, string]>([PHOTO_SETS[0][0], PHOTO_SETS[0][0]]);
+  const [slideshowActiveSlot, setSlideshowActiveSlot] = useState<0 | 1>(0);
   const [focusPlayKey, setFocusPlayKey] = useState(0);
   const [mediaActive, setMediaActive] = useState(false);
   const [glitchActive, setGlitchActive] = useState(false);
   const [typedSubtitle, setTypedSubtitle] = useState('');
+  const [showExpandedScrollCue, setShowExpandedScrollCue] = useState(false);
+
+  const showExpandedScrollCueOnce = useCallback(() => {
+    if (expandedScrollCueShownRef.current) return;
+
+    expandedScrollCueShownRef.current = true;
+    expandedScrollCueStartYRef.current = window.scrollY;
+    setShowExpandedScrollCue(true);
+  }, []);
 
   const advanceToNextPhrase = useCallback(() => {
     if (phraseTimerRef.current !== null) {
@@ -142,7 +155,12 @@ export default function Hero() {
       phraseTimerRef.current = null;
     }
 
-    const next = (phraseIndexRef.current + 1) % PHRASES.length;
+    const reachedEnd = phraseIndexRef.current >= PHRASES.length - 1;
+    if (reachedEnd) {
+      showExpandedScrollCueOnce();
+    }
+
+    const next = reachedEnd ? 0 : phraseIndexRef.current + 1;
     phraseIndexRef.current = next;
     setPhraseIndex(next);
     forwardCycleCompletedRef.current = false;
@@ -150,7 +168,7 @@ export default function Hero() {
     setMediaActive(false);
     setFocusActive(true);
     setFocusPlayKey(k => k + 1);
-  }, []);
+  }, [showExpandedScrollCueOnce]);
 
   const handleMenuAdvanceComplete = useCallback(() => {
     if (!sequenceStartedRef.current || !forwardCycleCompletedRef.current) return;
@@ -171,14 +189,21 @@ export default function Hero() {
     setFocusActive(false);
     setFrameIndex(0);
     setMediaActive(true);
+  }, []);
 
-    if (isMediaMode('photos', phraseIndexRef.current)) {
-      phraseTimerRef.current = window.setTimeout(() => {
-        phraseTimerRef.current = null;
-        advanceToNextPhrase();
-      }, PHOTO_MEDIA_DURATION_MS);
-    }
-  }, [advanceToNextPhrase]);
+  useEffect(() => {
+    if (!showExpandedScrollCue) return;
+
+    const dismissCueOnScroll = () => {
+      const startY = expandedScrollCueStartYRef.current ?? window.scrollY;
+      if (Math.abs(window.scrollY - startY) > 6) {
+        setShowExpandedScrollCue(false);
+      }
+    };
+
+    window.addEventListener('scroll', dismissCueOnScroll, { passive: true });
+    return () => window.removeEventListener('scroll', dismissCueOnScroll);
+  }, [showExpandedScrollCue]);
 
   useEffect(() => {
     [...PHOTO_SETS.flat(), ...heroMenuItems.map(item => item.image)].forEach(src => {
@@ -214,14 +239,35 @@ export default function Hero() {
   useEffect(() => {
     if (!mediaActive || !isMediaMode('photos', phraseIndex)) return;
 
-    const frameTimer = window.setInterval(() => {
-      setFrameIndex(index => (index + 1) % 12);
-    }, PHOTO_FRAME_INTERVAL_MS);
+    const set = PHOTO_SETS[PHRASE_TO_PHOTO_SET[phraseIndex] ?? 0] ?? PHOTO_SETS[0];
+    const src = set[frameIndex] ?? set[0];
+    const next: 0 | 1 = slideshowSlotRef.current === 0 ? 1 : 0;
+    setSlideshowSrcs(prev => { const n = [...prev] as [string, string]; n[next] = src; return n; });
+    setSlideshowActiveSlot(next);
+    slideshowSlotRef.current = next;
+  }, [frameIndex, phraseIndex, mediaActive]);
 
-    return () => {
-      window.clearInterval(frameTimer);
+  useEffect(() => {
+    if (!mediaActive || !isMediaMode('photos', phraseIndex)) return;
+
+    const set = PHOTO_SETS[PHRASE_TO_PHOTO_SET[phraseIndex] ?? 0] ?? PHOTO_SETS[0];
+    const setLength = set.length;
+    let currentIndex = 0;
+    let timerId: number;
+
+    const tick = () => {
+      currentIndex += 1;
+      if (currentIndex >= setLength) {
+        advanceToNextPhrase();
+        return;
+      }
+      setFrameIndex(currentIndex);
+      timerId = window.setTimeout(tick, PHOTO_FRAME_INTERVAL_MS);
     };
-  }, [mediaActive, phraseIndex]);
+
+    timerId = window.setTimeout(tick, PHOTO_FRAME_INTERVAL_MS);
+    return () => window.clearTimeout(timerId);
+  }, [mediaActive, phraseIndex, advanceToNextPhrase]);
 
   useEffect(() => {
     const subtitle = subtitleRef.current;
@@ -272,7 +318,7 @@ export default function Hero() {
       const maxScale = (window.innerHeight * 0.55) / rect.height;
       return Math.min(targetScale, maxScale);
     };
-    const usesFlatExpandedLetter = () => window.innerWidth <= 800;
+    const usesFlatExpandedLetter = () => window.innerWidth <= 1150;
     const expandedTransformFactor = () =>
       usesFlatExpandedLetter() ? 1 : Math.max(focusScale() * projectedScale(), 1);
     const currentProjection = () => {
@@ -302,12 +348,12 @@ export default function Hero() {
     const expandedTargetWidth = () => {
       const isLaptopViewport = window.innerWidth >= 1000 && window.innerWidth < 1300;
       const isMidMonitorViewport = window.innerWidth >= 1300 && window.innerWidth <= 1600;
-      const maxWidthRatio = window.innerWidth <= 800 ? 0.99 : isLaptopViewport ? 0.76 : isMidMonitorViewport ? 0.68 : 0.62;
+      const maxWidthRatio = window.innerWidth <= 1150 ? 0.99 : isLaptopViewport ? 0.76 : isMidMonitorViewport ? 0.68 : 0.62;
       return Math.min(viewportLength('--hero-i-expanded-width', 'x', maxWidthRatio), window.innerWidth * maxWidthRatio);
     };
     const expandedTargetHeight = () => {
       const isLaptopViewport = window.innerWidth >= 1000 && window.innerWidth < 1300;
-      const maxHeightRatio = window.innerWidth <= 800 ? 0.68 : isLaptopViewport ? 0.82 : 0.68;
+      const maxHeightRatio = window.innerWidth <= 1150 ? 0.68 : isLaptopViewport ? 0.82 : 0.68;
       return Math.min(viewportLength('--hero-i-expanded-height', 'y', maxHeightRatio), window.innerHeight * maxHeightRatio);
     };
     const expandedWidthPx = () => expandedTargetWidth() / expandedTransformFactor();
@@ -348,12 +394,15 @@ export default function Hero() {
         phraseTimerRef.current = null;
       }
       phraseIndexRef.current = 0;
+      expandedScrollCueShownRef.current = false;
       forwardCycleCompletedRef.current = false;
       menuAdvanceCountRef.current = 0;
+      expandedScrollCueStartYRef.current = null;
       setPhraseIndex(0);
       sequenceStartedRef.current = false;
       setFocusActive(false);
       setMediaActive(false);
+      setShowExpandedScrollCue(false);
       setFrameIndex(0);
     };
 
@@ -361,8 +410,11 @@ export default function Hero() {
       if (sequenceStartedRef.current) return;
 
       sequenceStartedRef.current = true;
+      expandedScrollCueShownRef.current = false;
       forwardCycleCompletedRef.current = false;
       menuAdvanceCountRef.current = 0;
+      expandedScrollCueStartYRef.current = null;
+      setShowExpandedScrollCue(false);
       setFrameIndex(0);
       setMediaActive(false);
       setFocusActive(true);
@@ -503,15 +555,16 @@ export default function Hero() {
                     onComplete={handlePhraseComplete}
                   />
                 </div>
-                <img
-                  src={(PHOTO_SETS[PHRASE_TO_PHOTO_SET[phraseIndex] ?? 0] ?? PHOTO_SETS[0])[frameIndex]}
-                  alt=""
-                  className={`hero-title-i-slideshow ${mediaActive && isMediaMode('photos', phraseIndex) ? 'is-visible' : ''}`}
-                  aria-hidden="true"
-                  onError={event => {
-                    event.currentTarget.src = PHOTO_SETS[0][0];
-                  }}
-                />
+                {([0, 1] as const).map(slot => (
+                  <img
+                    key={slot}
+                    src={slideshowSrcs[slot]}
+                    alt=""
+                    aria-hidden="true"
+                    className={`hero-title-i-slideshow ${mediaActive && isMediaMode('photos', phraseIndex) && slot === slideshowActiveSlot ? 'is-visible' : ''}`}
+                    onError={e => { e.currentTarget.src = PHOTO_SETS[0][0]; }}
+                  />
+                ))}
                 <div className={`hero-title-i-menu ${mediaActive && isMediaMode('menu', phraseIndex) ? 'is-visible' : ''}`}>
                   {mediaActive && isMediaMode('menu', phraseIndex) && (
                     <HeroRotatingMenu
@@ -546,7 +599,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="hero-scroll">
+      <div className={`hero-scroll${showExpandedScrollCue ? ' is-expanded-cue' : ''}`}>
         <span>{heroData.scrollLabel}</span>
         <svg width="1" height="48" viewBox="0 0 1 48" aria-hidden="true">
           <line className="hero-scroll-line" x1="0.5" y1="0" x2="0.5" y2="36" stroke="currentColor" strokeWidth="1" />

@@ -294,18 +294,19 @@
 	height: 100%;
 	opacity: 0;
 	pointer-events: none;
-	transition: opacity 0.35s ease;
 }
 
 .hero-title-i-slideshow {
 	display: block;
 	object-fit: cover;
 	user-select: none;
+	transition: opacity 0.22s ease;
 }
 
 .hero-title-i-menu {
 	overflow: hidden;
 	background: #000000;
+	transition: opacity 0.35s ease;
 }
 
 .hero-rotating-menu {
@@ -358,11 +359,25 @@
 	animation: hero-fade-in 0.5s ease 3.5s forwards;
 }
 
+.hero-scroll.is-expanded-cue {
+	z-index: 60;
+	color: rgba(30, 30, 25, 0.72);
+	opacity: 1;
+	animation:
+		hero-expanded-scroll-cue-in 0.32s ease forwards,
+		hero-expanded-cue-pulse 2.2s ease-in-out 0.32s infinite;
+	pointer-events: none;
+}
+
 
 .hero-scroll-line {
 	stroke-dasharray: 36;
 	stroke-dashoffset: 36;
 	animation: hero-scroll-line-draw 0.55s cubic-bezier(0.4, 0, 0.2, 1) 3.3s forwards;
+}
+
+.hero-scroll.is-expanded-cue .hero-scroll-line {
+	animation: hero-expanded-scroll-line-draw 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .hero-scroll-arrow {
@@ -371,6 +386,12 @@
 	animation:
 		hero-scroll-arrow-draw 0.3s ease 3.75s forwards,
 		hero-scroll-arrow-bob 2s ease-in-out 4.2s infinite;
+}
+
+.hero-scroll.is-expanded-cue .hero-scroll-arrow {
+	animation:
+		hero-expanded-scroll-arrow-draw 0.3s ease 0.42s forwards,
+		hero-scroll-arrow-bob 2s ease-in-out 0.82s infinite;
 }
 
 @keyframes hero-scroll-line-draw {
@@ -384,6 +405,33 @@
 @keyframes hero-scroll-arrow-bob {
 	0%, 100% { transform: translateY(0); }
 	50%       { transform: translateY(4px); }
+}
+
+@keyframes hero-expanded-cue-pulse {
+	0%, 100% { opacity: 0.45; }
+	50%       { opacity: 1; }
+}
+
+@keyframes hero-expanded-scroll-cue-in {
+	from {
+		opacity: 0;
+		transform: translate(-50%, 0.35rem);
+	}
+
+	to {
+		opacity: 1;
+		transform: translate(-50%, 0);
+	}
+}
+
+@keyframes hero-expanded-scroll-line-draw {
+	from { stroke-dashoffset: 36; }
+	to { stroke-dashoffset: 0; }
+}
+
+@keyframes hero-expanded-scroll-arrow-draw {
+	from { stroke-dashoffset: 20; }
+	to { stroke-dashoffset: 0; }
 }
 
 /* ── keyframes ────────────────────────────────────────────── */
@@ -414,7 +462,7 @@
 	}
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1150px) {
 	.hero-title-i-anchor {
 		--hero-i-expanded-width: 99%;
 	}
