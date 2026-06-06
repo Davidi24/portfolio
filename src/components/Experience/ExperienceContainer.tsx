@@ -4,8 +4,8 @@ import experienceData from '../../data/experienceData.json';
 interface ExperienceItem {
   slug: string;
   bgLabel: string;
-  period: string;
   title: string;
+  company?: string;
   label: string;
   metric: string;
   body: string;
@@ -58,9 +58,15 @@ export default function ExperienceContainer({ activeIndex = -1 }: ExperienceCont
 
           <div className="experience-roadmap-content">
             <h3>{item.title}</h3>
-            {item.employmentType && (
-              <span className="experience-employment-type">{item.employmentType}</span>
-            )}
+            <div className="experience-roadmap-meta">
+              {item.company && (
+                <span className="experience-roadmap-company">{item.company}</span>
+              )}
+              <span className="experience-roadmap-location">{item.label}</span>
+              {item.employmentType && (
+                <span className="experience-employment-type">{item.employmentType}</span>
+              )}
+            </div>
 
             <ul className="experience-roadmap-highlights">
               {item.highlights.map((highlight) => (

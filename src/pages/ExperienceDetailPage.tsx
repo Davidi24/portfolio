@@ -83,7 +83,7 @@ export default function ExperienceDetailPage() {
         <div className="experience-page-content">
           <div className="experience-page-meta">
             <span>{experience.metric}</span>
-            <span>{experience.period}</span>
+            <span>{experience.bgLabel}</span>
             <span>{experience.label}</span>
           </div>
 

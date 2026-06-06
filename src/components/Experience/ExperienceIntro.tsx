@@ -132,7 +132,8 @@ export default function ExperienceIntro() {
       const roadmapRouteFirstPath = roadmap.querySelector<SVGPathElement>('.experience-roadmap-route-path--first');
       const roadmapRouteThirdPath = roadmap.querySelector<SVGPathElement>('.experience-roadmap-route-path--third');
       const firstPathMultiplier =
-        window.innerWidth >= 2000 ? 3.35 : window.innerWidth >= 1800 ? 2.1 : 1.65;
+        window.innerWidth >= 2000 ? 10.5 : window.innerWidth >= 1800 ? 8.5 : 1.65;
+      const thirdPathDrawSpan = window.innerWidth >= 1800 ? 0.36 : 0.55;
 
       const roadmapCards = gsap.utils.toArray<HTMLElement>('.experience-roadmap-card', roadmap);
       const clampOpacity = gsap.utils.clamp(0, 1);
@@ -218,7 +219,7 @@ export default function ExperienceIntro() {
             roadmapRouteFirstPath.style.strokeDashoffset = String(1 - Math.min(1, proxy.progress * firstPathMultiplier));
           }
           if (roadmapRouteThirdPath) {
-            const thirdRouteProgress = Math.max(0, Math.min(1, (proxy.progress - 0.56) / 0.55));
+            const thirdRouteProgress = Math.max(0, Math.min(1, (proxy.progress - 0.56) / thirdPathDrawSpan));
             roadmapRouteThirdPath.style.strokeDashoffset = String(1 - thirdRouteProgress);
           }
         },

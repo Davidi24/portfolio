@@ -9,7 +9,6 @@
     {
       "slug": "freelance-software-developer",
       "bgLabel": "Aug 2025 - Present",
-      "period": "Aug 2025 - Present",
       "title": "Freelance Software Developer",
       "label": "Remote",
       "metric": "01",
@@ -31,8 +30,8 @@
     {
       "slug": "software-engineer-ae-distribution",
       "bgLabel": "Jul 2022 - Sep 2024",
-      "period": "Jul 2022 - Sep 2024",
       "title": "Software Engineer",
+      "company": "AE Distribution",
       "label": "Tirana, Albania",
       "metric": "02",
       "body": "Full-time engineering role building and optimizing a fiscalization system processing millions of records daily with Spring Boot and React.",
@@ -40,7 +39,7 @@
         "Built and optimized a fiscalization system processing millions of records daily using Spring Boot and React, focused on performance.",
         "Contributed to microservices architecture within a cross-functional Agile team.",
         "Improved critical data paths and system responsiveness to handle high-volume production load reliably.",
-        "Collaborated across engineering, product, and operations to ship features in regular Agile cycles."
+        "Improved my skills in building scalable, real-world software solutions."
       ],
       "employmentType": "Full-time",
       "tools": ["Spring Boot", "React", "Docker", "Microservices", "PostgreSQL", "Spring Security", "JWT", "CI/CD", "SEO", "Agile"],
@@ -54,8 +53,8 @@
     {
       "slug": "web-developer-protik",
       "bgLabel": "Jul 2023 - Oct 2023",
-      "period": "Jul 2023 - Oct 2023",
       "title": "Web Developer & Event Organizer",
+      "company": "Protik Innovation Center",
       "label": "Tirana, Albania",
       "metric": "03",
       "body": "Part-time role building and improving website features for startups and representing the company at innovation events.",
@@ -66,7 +65,7 @@
         "Gained direct exposure to early-stage product thinking and the bridge between tech and business."
       ],
       "employmentType": "Part-time",
-      "tools": ["JavaScript", "HTML", "CSS", "Web Dev", "Community"],
+      "tools": ["React", "Tailwind", "Community", "Collaboration", "Pitching & Presentation"],
       "images": ["/video/frames/frame-118.jpg", "/video/frames/frame-144.jpg", "/video/frames/frame-192.jpg"],
       "description": [
         "At Protik Innovation Center I worked part-time as a web developer and event organizer, contributing to a hub that supports startups and entrepreneurs in Albania.",

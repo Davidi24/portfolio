@@ -396,18 +396,40 @@
 	text-align: right;
 }
 
-.experience-employment-type {
-	display: block;
+.experience-roadmap-company {
+	color: rgba(255, 255, 255, 0.72);
+	font-size: 0.55rem !important;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+}
+
+.experience-roadmap-meta {
+	display: flex;
+	align-items: center;
+	gap: 0.55rem;
 	margin-top: 0.35rem;
+	flex-wrap: wrap;
+}
+
+.experience-roadmap-card--left .experience-roadmap-meta {
+	justify-content: flex-end;
+}
+
+.experience-employment-type {
 	color: #c6f435;
-	font-size: 0.72rem;
+	font-size: 0.55rem !important;
 	font-weight: 700;
 	letter-spacing: 0.12em;
 	text-transform: uppercase;
 }
 
-.experience-roadmap-card--left .experience-employment-type {
-	text-align: right;
+.experience-roadmap-location {
+	color: rgba(255, 255, 255, 0.5);
+	font-size: 0.55rem !important;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
 }
 
 .experience-roadmap-content h3,
@@ -701,6 +723,7 @@
 	.experience-roadmap-card {
 		width: 28rem;
 	}
+
 }
 
 @media (min-width: 1600px) {
@@ -715,6 +738,7 @@
 	.experience-roadmap-track {
 		width: 3px;
 	}
+
 
 	.experience-roadmap-content h3 {
 		font-size: clamp(1.9rem, 2.2vw, 3rem);
@@ -742,6 +766,18 @@
 		width: 3.2rem;
 		height: 2.5rem;
 	}
+
+	.experience-roadmap-company,
+	.experience-roadmap-location,
+	.experience-employment-type {
+		font-size: 0.72rem !important;
+	}
+}
+
+@media (max-width: 1599px) {
+	.experience-roadmap-tools span {
+		font-size: 0.56rem !important;
+	}
 }
 
 @media (min-width: 2000px) {
@@ -750,7 +786,7 @@
 	}
 
 	.experience-roadmap-route-path--first {
-		d: path("M 3180 780 C 2650 1030 2240 490 1705 570 C 1290 632 1096 832 830 978 C 560 1126 302 1218 -42 1090 C -520 912 -1040 1098 -1540 770");
+		d: path("M 3180 780 C 2650 1030 2240 490 1705 570 C 1290 632 1096 832 830 978 C 560 1126 302 1218 -42 1090 C -520 912 -1040 1098 -1540 770 C -1960 560 -2350 655 -2820 470");
 	}
 
 	.experience-roadmap-card {
@@ -790,7 +826,7 @@
 	}
 
 	.experience-roadmap-route-path--first {
-		d: path("M 2240 825 C 1905 948 1760 625 1380 625 C 1000 625 620 960 250 1095 C -85 1218 -360 1138 -610 895");
+		d: path("M 2240 825 C 1905 948 1760 625 1380 625 C 1000 625 620 960 250 1095 C -85 1218 -520 1170 -1120 860 C -1460 685 -1790 782 -2140 620");
 	}
 }
 
