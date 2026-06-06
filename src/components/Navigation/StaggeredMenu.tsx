@@ -19,6 +19,7 @@ export interface StaggeredMenuProps {
   colors?: string[];
   items?: StaggeredMenuItem[];
   socialItems?: StaggeredMenuSocialItem[];
+  onItemClick?: (event: React.MouseEvent<HTMLAnchorElement>, item: StaggeredMenuItem) => void;
   displaySocials?: boolean;
   displayItemNumbering?: boolean;
   className?: string;
@@ -40,6 +41,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
   colors = ['#1E1E1E', '#2A2A2A'],
   items = [],
   socialItems = [],
+  onItemClick,
   displaySocials = true,
   displayItemNumbering = true,
   className,
@@ -98,10 +100,19 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
       gsap.set(plusV, { transformOrigin: '50% 50%', rotate: 90 });
       gsap.set(icon, { rotate: 0, transformOrigin: '50% 50%' });
       gsap.set(textInner, { yPercent: 0 });
-      if (toggleBtnRef.current) gsap.set(toggleBtnRef.current, { color: menuButtonColor });
     });
     return () => ctx.revert();
-  }, [menuButtonColor, position]);
+  }, [position]);
+
+  useLayoutEffect(() => {
+    const btn = toggleBtnRef.current;
+    if (!btn) return;
+
+    colorTweenRef.current?.kill();
+    gsap.set(btn, {
+      color: openRef.current && changeMenuColorOnOpen ? openMenuButtonColor : menuButtonColor,
+    });
+  }, [menuButtonColor, openMenuButtonColor, changeMenuColorOnOpen]);
 
   const buildOpenTimeline = useCallback(() => {
     const panel = panelRef.current;
@@ -206,6 +217,15 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
     }
   }, [openMenuButtonColor, menuButtonColor, changeMenuColorOnOpen]);
 
+  const setFinalToggleText = useCallback((label: 'Menu' | 'Close') => {
+    setTextLines(label === 'Menu' ? ['Menu', 'Close'] : ['Close', 'Menu']);
+    window.requestAnimationFrame(() => {
+      if (textInnerRef.current) {
+        gsap.set(textInnerRef.current, { yPercent: 0 });
+      }
+    });
+  }, []);
+
   const animateText = useCallback((opening: boolean) => {
     const inner = textInnerRef.current;
     if (!inner) return;
@@ -221,8 +241,13 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
     setTextLines(seq);
     gsap.set(inner, { yPercent: 0 });
     const finalShift = ((seq.length - 1) / seq.length) * 100;
-    textCycleAnimRef.current = gsap.to(inner, { yPercent: -finalShift, duration: 0.5 + seq.length * 0.07, ease: 'power4.out' });
-  }, []);
+    textCycleAnimRef.current = gsap.to(inner, {
+      yPercent: -finalShift,
+      duration: 0.5 + seq.length * 0.07,
+      ease: 'power4.out',
+      onComplete: () => setFinalToggleText(targetLabel),
+    });
+  }, [setFinalToggleText]);
 
   const toggleMenu = useCallback(() => {
     const target = !openRef.current;
@@ -310,7 +335,17 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
           <ul className="sm-panel-list" role="list" data-numbering={displayItemNumbering || undefined}>
             {items.map((it, idx) => (
               <li className="sm-panel-itemWrap" key={it.label + idx}>
-                <a className="sm-panel-item" href={it.link} aria-label={it.ariaLabel} data-index={idx + 1} style={itemColor ? { color: itemColor } : undefined}>
+                <a
+                  className="sm-panel-item"
+                  href={it.link}
+                  aria-label={it.ariaLabel}
+                  data-index={idx + 1}
+                  style={itemColor ? { color: itemColor } : undefined}
+                  onClick={event => {
+                    onItemClick?.(event, it);
+                    closeMenu();
+                  }}
+                >
                   <span className="sm-panel-itemLabel">{it.label}</span>
                 </a>
               </li>

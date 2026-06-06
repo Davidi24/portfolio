@@ -334,24 +334,23 @@
   letter-spacing: 0;
 }
 
-.adaptive-menu .sm-toggle {
-  background: transparent;
-  color: #FFFFFF;
-}
+@media (max-width: 1150px) {
+  .navbar-menu .staggered-menu-header {
+    top: var(--site-nav-y, 1rem);
+    height: var(--site-nav-control-size, 2.6rem);
+    align-items: center;
+  }
 
-.adaptive-menu .sm-toggle:hover {
-  opacity: 1;
-}
+  .navbar-menu .sm-toggle {
+    height: var(--site-nav-control-size, 2.6rem);
+  }
 
-.adaptive-menu .sm-toggle-textWrap,
-.adaptive-menu .sm-icon,
-.adaptive-menu .sm-library-icon {
-  mix-blend-mode: difference;
-}
-
-.adaptive-menu .sm-icon-line,
-.adaptive-menu .sm-mobile-hamburger-line {
-  background: #FFFFFF;
+  .staggered-menu-panel,
+  .sm-prelayers {
+    width: 100%;
+    left: 0;
+    right: 0;
+  }
 }
 
 @media (max-width: 1024px) {

@@ -15,14 +15,23 @@ import ExperienceDetailPage from './pages/ExperienceDetailPage';
 
 const InfiniteMenuTestPage = lazy(() => import('./pages/InfiniteMenuTestPage'));
 
+type PortfolioWindow = Window & {
+  portfolioLenis?: Lenis;
+};
+
 function PortfolioHome() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
     const lenis = new Lenis({
       lerp: 0.08,
-      smoothWheel: true
+      smoothWheel: true,
+      anchors: {
+        duration: 1.15,
+      },
     });
+
+    (window as PortfolioWindow).portfolioLenis = lenis;
 
     const updateScroll = (time: number) => {
       lenis.raf(time * 1000);
@@ -34,6 +43,9 @@ function PortfolioHome() {
 
     return () => {
       gsap.ticker.remove(updateScroll);
+      if ((window as PortfolioWindow).portfolioLenis === lenis) {
+        delete (window as PortfolioWindow).portfolioLenis;
+      }
       lenis.destroy();
     };
   }, []);

@@ -15,6 +15,8 @@ export interface GooeyNavProps {
   timeVariance?: number;
   colors?: number[];
   autoHoverDelay?: number;
+  onAutoHoverStart?: () => void;
+  onItemClick?: (event: React.MouseEvent<HTMLAnchorElement>, item: GooeyNavItem) => void;
 }
 
 const GooeyNav: React.FC<GooeyNavProps> = ({
@@ -26,6 +28,8 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
   timeVariance = 300,
   colors = [1, 2, 3, 1, 2, 3, 1, 4],
   autoHoverDelay,
+  onAutoHoverStart,
+  onItemClick,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLUListElement>(null);
@@ -180,6 +184,7 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
       const li = navRef.current?.querySelectorAll('li')[0] as HTMLElement | undefined;
       if (!li) return;
 
+      onAutoHoverStart?.();
       setHoveredIndex(0);
       updateEffectPosition(li);
 
@@ -234,7 +239,7 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
         <ul ref={navRef} onMouseLeave={handleMouseLeave}>
           {items.map((item, index) => (
             <li key={index} className={hoveredIndex === index ? 'active' : ''} onMouseEnter={e => handleMouseEnter(e, index)}>
-              <a href={item.href}>
+              <a href={item.href} onClick={event => onItemClick?.(event, item)}>
                 {item.label}
               </a>
             </li>
