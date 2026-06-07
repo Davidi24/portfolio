@@ -281,8 +281,12 @@ export default function Hero() {
     const focusDepth = 360;
     const perspective = () => parseFloat(getComputedStyle(title).perspective) || 1200;
     const projectedScale = () => perspective() / Math.max(perspective() - focusDepth, 1);
-    const cssVar = (property: string, fallback: string) =>
-      getComputedStyle(iAnchor).getPropertyValue(property).trim() || fallback;
+    const cssVar = (property: string, fallback: string) => {
+      const raw = getComputedStyle(iAnchor).getPropertyValue(property).trim();
+      // Minified CSS strips leading zeros (0.14em -> .14em); GSAP can't parse
+      // a bare leading decimal and resolves it to 0, so restore it here.
+      return raw ? raw.replace(/^(-?)\.(\d)/, '$10.$2') : fallback;
+    };
     const viewportLength = (property: string, axis: 'x' | 'y', fallbackRatio: number) => {
       const value = cssVar(property, '');
       const amount = parseFloat(value);
