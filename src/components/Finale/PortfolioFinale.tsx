@@ -64,6 +64,26 @@ function WorkFolder({ project }: { project: Project }) {
 
 export default function PortfolioFinale() {
   const sectionRef = useRef<HTMLElement>(null);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
+  const currentYear = new Date().getFullYear();
+
+  useEffect(() => {
+    if (!privacyOpen) return;
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setPrivacyOpen(false);
+      }
+    };
+
+    document.documentElement.classList.add('privacy-dialog-lock');
+    window.addEventListener('keydown', closeOnEscape);
+
+    return () => {
+      document.documentElement.classList.remove('privacy-dialog-lock');
+      window.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [privacyOpen]);
 
   useLayoutEffect(() => {
     gsap.set('.work-title span', { yPercent: 112 });
@@ -194,7 +214,7 @@ export default function PortfolioFinale() {
           color: '#f5f5f5',
           ease: 'none',
         }, 0)
-        .to('.finale-footer a', { color: '#c6f435', ease: 'none' }, 0);
+        .to('.finale-footer a, .finale-footer button', { color: '#c6f435', ease: 'none' }, 0);
     }, section);
 
     return () => ctx.revert();
@@ -299,11 +319,54 @@ export default function PortfolioFinale() {
         </section>
 
         <footer className="finale-footer">
-          <span>David Portfolio</span>
+          <span>Copyright {currentYear} David Keci</span>
           <span>Full Stack Developer</span>
+          <button type="button" onClick={() => setPrivacyOpen(true)}>Privacy</button>
           <a href="#" aria-label="Back to top">Back to top</a>
         </footer>
       </div>
+
+      {privacyOpen && (
+        <div className="privacy-dialog-overlay" role="presentation" onMouseDown={() => setPrivacyOpen(false)}>
+          <section
+            className="privacy-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="privacy-dialog-title"
+            onMouseDown={event => event.stopPropagation()}
+          >
+            <button type="button" className="privacy-dialog-close" onClick={() => setPrivacyOpen(false)}>
+              [ Close ]
+            </button>
+
+            <p className="privacy-dialog-kicker">// Privacy Policy</p>
+            <h2 id="privacy-dialog-title">Data Collected</h2>
+            <p>
+              I use Vercel Analytics to understand how this portfolio is used. It can collect page
+              views, approximate location, device and browser information, referrer, time on page,
+              pages visited, and the CV Download Clicked event.
+            </p>
+
+            <h2>Purpose</h2>
+            <p>
+              This data is used only to improve the site and receive simple visitor session
+              summaries by email. It is not used for advertising, profiling, or selling personal data.
+            </p>
+
+            <h2>Cookies</h2>
+            <p>
+              Vercel Analytics is cookieless and does not use tracking cookies. The session summary
+              uses browser session storage only for the current visit.
+            </p>
+
+            <h2>Your Rights</h2>
+            <p>
+              Under GDPR, you may request access, correction, deletion, restriction, or object to
+              processing. Contact me at <a href={`mailto:${contactData.email}`}>{contactData.email}</a>.
+            </p>
+          </section>
+        </div>
+      )}
     </section>
   );
 }

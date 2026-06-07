@@ -4,6 +4,7 @@ import GooeyNav from './GooeyNav';
 import Magnet from './Magnet';
 import StaggeredMenu from './StaggeredMenu';
 import type { StaggeredMenuItem } from './StaggeredMenu';
+import { ANALYTICS_LOCATION_CHANGE_EVENT, trackCvDownload } from '../Analytics/analyticsEvents';
 import './Navbar.css';
 
 const navItems = [
@@ -50,6 +51,8 @@ const MENU_BUTTON_COLOR_BY_SECTION: Record<string, string> = {
 
 const MOBILE_NAV_QUERY = '(max-width: 1150px)';
 const CV_LABEL = 'Download CV';
+const NAV_TRANSITION_EVENT = 'portfolio:navigation-transition';
+const EXPERIENCE_NAV_OFFSET_RATIO = 0.08;
 const CV_OPTIONS = [
   { label: 'English', href: '/cv-en.pdf', download: 'David-CV-English.pdf' },
   { label: 'Deutsch', href: '/cv-de.pdf', download: 'David-CV-Deutsch.pdf' },
@@ -57,8 +60,15 @@ const CV_OPTIONS = [
 
 type PortfolioWindow = Window & {
   portfolioLenis?: {
-    scrollTo: (target: HTMLElement | string | number, options?: { duration?: number }) => void;
+    scrollTo: (
+      target: HTMLElement | string | number,
+      options?: { duration?: number; immediate?: boolean; force?: boolean }
+    ) => void;
   };
+};
+
+type NavigationTransitionDetail = {
+  onCovered?: () => void;
 };
 
 export default function Navbar() {
@@ -154,19 +164,24 @@ export default function Navbar() {
         MENU_COLORS.limeAccent,
       ];
 
-  const smoothScrollToHref = (href: string) => {
+  const smoothScrollToHref = (href: string, options: { immediate?: boolean } = {}) => {
     if (!href.startsWith('#')) return false;
 
     const targetId = href.slice(1);
+    const immediate = options.immediate ?? false;
+    const targetOffset = targetId === 'experience'
+      ? Math.round(window.innerHeight * EXPERIENCE_NAV_OFFSET_RATIO)
+      : 0;
 
     if (targetId === 'home') {
       window.history.pushState(null, '', href);
+      window.dispatchEvent(new Event(ANALYTICS_LOCATION_CHANGE_EVENT));
 
       const lenis = (window as PortfolioWindow).portfolioLenis;
       if (lenis) {
-        lenis.scrollTo(0, { duration: 1.15 });
+        lenis.scrollTo(0, immediate ? { immediate: true, force: true } : { duration: 1.15 });
       } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: immediate ? 'auto' : 'smooth' });
       }
 
       return true;
@@ -176,21 +191,44 @@ export default function Navbar() {
     if (!target) return false;
 
     window.history.pushState(null, '', href);
+    window.dispatchEvent(new Event(ANALYTICS_LOCATION_CHANGE_EVENT));
 
     const lenis = (window as PortfolioWindow).portfolioLenis;
+    const targetScroll = window.scrollY + target.getBoundingClientRect().top + targetOffset;
     if (lenis) {
-      lenis.scrollTo(target, { duration: 1.15 });
+      lenis.scrollTo(targetScroll, immediate ? { immediate: true, force: true } : { duration: 1.15 });
     } else {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      window.scrollTo({ top: targetScroll, behavior: immediate ? 'auto' : 'smooth' });
     }
 
     return true;
   };
 
   const handleNavClick = (event: ReactMouseEvent<HTMLAnchorElement>, href: string) => {
-    if (smoothScrollToHref(href)) {
-      event.preventDefault();
+    if (!href.startsWith('#')) return;
+
+    const targetId = href.slice(1);
+    const targetExists = targetId === 'home' || Boolean(document.getElementById(targetId));
+    if (!targetExists) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.nativeEvent.stopImmediatePropagation();
+
+    if (cvMenuOpen) {
+      setCvMenuOpen(false);
     }
+
+    window.dispatchEvent(new CustomEvent<NavigationTransitionDetail>(NAV_TRANSITION_EVENT, {
+      detail: {
+        onCovered: () => smoothScrollToHref(href, { immediate: true }),
+      },
+    }));
+  };
+
+  const handleCvDownloadClick = (option: (typeof CV_OPTIONS)[number]) => {
+    trackCvDownload({ source: 'navbar', language: option.label });
+    setCvMenuOpen(false);
   };
 
   const renderCvMenu = () => (
@@ -217,7 +255,7 @@ export default function Navbar() {
             download={option.download}
             className="nav-cv-option"
             role="menuitem"
-            onClick={() => setCvMenuOpen(false)}
+            onClick={() => handleCvDownloadClick(option)}
           >
             {option.label}
           </a>

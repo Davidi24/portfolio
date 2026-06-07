@@ -9,6 +9,7 @@ import AboutMe from './components/About/AboutMe';
 import CustomCursor from './components/Cursor/CustomCursor';
 import ExperienceIntro from './components/Experience/ExperienceIntro';
 import PortfolioFinale from './components/Finale/PortfolioFinale';
+import StartupLoader from './components/StartupLoader/StartupLoader';
 import AboutPage from './pages/AboutPage';
 import ProjectDetailPage from './pages/ProjectDetailPage';
 import ExperienceDetailPage from './pages/ExperienceDetailPage';
@@ -52,6 +53,7 @@ function PortfolioHome() {
 
   return (
     <>
+      <StartupLoader />
       <CustomCursor />
       <Navbar />
       <Hero />

@@ -700,9 +700,104 @@
 	line-height: 1.35;
 }
 
-.finale-footer a {
+.finale-footer a,
+.finale-footer button {
+	border: 0;
+	background: transparent;
 	color: #111111;
+	padding: 0;
+	font: inherit;
 	text-decoration: none;
+	text-transform: inherit;
+	cursor: pointer;
+}
+
+html.privacy-dialog-lock,
+html.privacy-dialog-lock body {
+	overflow: hidden;
+}
+
+.privacy-dialog-overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 1000;
+	display: grid;
+	place-items: center;
+	padding: clamp(1rem, 4vw, 3rem);
+	background: rgba(0, 0, 0, 0.66);
+	backdrop-filter: blur(4px);
+}
+
+.privacy-dialog {
+	position: relative;
+	width: min(100%, 52rem);
+	max-height: min(84vh, 52rem);
+	overflow: auto;
+	border: 1px solid rgba(245, 245, 245, 0.16);
+	background: #101010;
+	color: #f5f5f0;
+	padding: clamp(2.2rem, 5vw, 4rem);
+	box-shadow: 0 2rem 5rem rgba(0, 0, 0, 0.42);
+}
+
+.privacy-dialog-close {
+	position: absolute;
+	top: 1.4rem;
+	right: 1.5rem;
+	border: 0;
+	background: transparent;
+	color: rgba(245, 245, 240, 0.72);
+	font: inherit;
+	font-size: 0.72rem;
+	font-weight: 800;
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+	cursor: pointer;
+}
+
+.privacy-dialog-close:hover,
+.privacy-dialog-close:focus-visible,
+.privacy-dialog a:hover,
+.privacy-dialog a:focus-visible {
+	color: #c6f435;
+}
+
+.privacy-dialog-kicker {
+	margin: 0 0 clamp(2rem, 4vw, 3rem);
+	color: rgba(245, 245, 240, 0.72);
+	font-size: 0.78rem;
+	font-weight: 800;
+	letter-spacing: 0.24em;
+	line-height: 1.2;
+	text-transform: uppercase;
+}
+
+.privacy-dialog h2 {
+	margin: 0 0 0.9rem;
+	color: #ffffff;
+	font-size: 0.92rem;
+	font-weight: 900;
+	letter-spacing: 0.18em;
+	line-height: 1.25;
+}
+
+.privacy-dialog p {
+	margin: 0;
+	color: rgba(245, 245, 240, 0.72);
+	font-family: "Courier New", monospace;
+	font-size: clamp(0.92rem, 1.4vw, 1.08rem);
+	letter-spacing: 0.08em;
+	line-height: 1.75;
+}
+
+.privacy-dialog p + h2 {
+	margin-top: clamp(1.8rem, 3vw, 2.4rem);
+}
+
+.privacy-dialog a {
+	color: #f5f5f0;
+	text-decoration-thickness: 0.08em;
+	text-underline-offset: 0.24em;
 }
 
 @media (min-width: 1800px) {

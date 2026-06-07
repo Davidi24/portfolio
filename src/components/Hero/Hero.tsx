@@ -7,6 +7,7 @@ import GlitchText from './GlitchText';
 import RotatingText from '../Experience/RotatingText';
 // @ts-expect-error React Bits JS-CSS registry item is intentionally installed as JSX.
 import InfiniteMenu from '../ReactBits/InfiniteMenu.jsx';
+import { trackCvDownload } from '../Analytics/analyticsEvents';
 import heroData from '../../data/heroData.json';
 import './Hero.css';
 
@@ -593,7 +594,13 @@ export default function Hero() {
               </a>
             ))}
           </div>
-          <a href={heroData.cv.href} download className="mobile-cv-button" aria-label={heroData.cv.label}>
+          <a
+            href={heroData.cv.href}
+            download
+            className="mobile-cv-button"
+            aria-label={heroData.cv.label}
+            onClick={() => trackCvDownload({ source: 'mobile-hero' })}
+          >
             <span className="mobile-cv-label">{heroData.cv.label}</span>
             <span className="mobile-cv-bridge" />
             <span className="mobile-cv-arrow" aria-hidden="true">
