@@ -434,6 +434,10 @@
 	filter: saturate(0.92) contrast(1.02);
 }
 
+.work-folder--stretch-images .work-folder-paper img {
+	object-fit: fill;
+}
+
 .work-folder-paper figcaption {
 	position: absolute;
 	left: 0.65rem;

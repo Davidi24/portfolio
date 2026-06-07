@@ -16,6 +16,11 @@ type Project = (typeof projects)[number];
 
 function WorkFolder({ project }: { project: Project }) {
   const [state, setState] = useState<'idle' | 'open' | 'force-closed'>('idle');
+  const folderClassName = [
+    'work-folder',
+    project.slug === 'jupyter-reproducibility' ? 'work-folder--stretch-images' : '',
+    state === 'open' ? 'is-open' : state === 'force-closed' ? 'is-force-closed' : '',
+  ].filter(Boolean).join(' ');
 
   const handleClick = () =>
     setState(s => s === 'open' ? 'force-closed' : 'open');
@@ -26,7 +31,7 @@ function WorkFolder({ project }: { project: Project }) {
 
   return (
     <div
-      className={`work-folder${state === 'open' ? ' is-open' : state === 'force-closed' ? ' is-force-closed' : ''}`}
+      className={folderClassName}
       role="button"
       tabIndex={0}
       aria-label={`${project.title} image folder`}
