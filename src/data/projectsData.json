@@ -12,7 +12,7 @@
       "links": [
         { "label": "GitHub", "href": "#" }
       ],
-      "images": ["/projects/1/1.png", "/projects/1/2.png", "/projects/1/3.png"],
+      "images": ["/projects/1/1.webp", "/projects/1/2.webp", "/projects/1/3.webp"],
       "description": [
         "An extension of a notebook reproducibility pipeline that adds support for Codeberg and Zenodo alongside the existing GitHub integration. The goal is FAIR-compliant analysis across multiple platforms.",
         "The project introduces AI-based categorization of Jupyter notebooks using LLMs, automated metadata extraction, and cross-platform reproducibility checks.",
@@ -31,7 +31,7 @@
       "links": [
         { "label": "GitHub", "href": "#" }
       ],
-      "images": ["/projects/2/2.jpg", "/projects/2/1.jpg", "/projects/2/3.jpg"],
+      "images": ["/projects/2/2.webp", "/projects/2/1.webp", "/projects/2/3.webp"],
       "description": [
         "A full restaurant management system covering the POS terminal for order taking, a Kitchen Display System for order flow, and an admin dashboard for menu management and analytics.",
         "The web surface is built with Next.js and TypeScript. The backend runs on Spring Boot with PostgreSQL. The monorepo is managed with Turborepo and containerized with Docker.",
@@ -50,7 +50,7 @@
       "links": [
         { "label": "Live Demo", "href": "#" }
       ],
-      "images": ["/projects/3/1.jpg", "/projects/3/2.jpg", "/projects/3/3.jpg"],
+      "images": ["/projects/3/1.webp", "/projects/3/2.webp", "/projects/3/3.webp"],
       "description": [
         "A platform for creating and sharing digital wedding invitations with professional UI templates and smooth, high-quality animations powered by GSAP.",
         "Each invitation is crafted with careful attention to motion — entrance sequences, scroll-driven reveals, and transitions that feel premium without being heavy.",
@@ -69,7 +69,7 @@
       "links": [
         { "label": "GitHub", "href": "#" }
       ],
-      "images": ["/projects/4/1.png", "/projects/4/2.png", "/projects/4/3.png"],
+      "images": ["/projects/4/1.webp", "/projects/4/2.webp", "/projects/4/3.webp"],
       "description": [
         "An immersive German-learning platform that places learners inside interactive 3D and AR rooms built with Three.js and WebXR — delivering language practice in realistic, contextual environments.",
         "The backend is built with FastAPI and uses both PostgreSQL for relational data and GraphDB with RDF/SPARQL for semantic knowledge graphs that power contextual vocabulary and grammar suggestions.",
