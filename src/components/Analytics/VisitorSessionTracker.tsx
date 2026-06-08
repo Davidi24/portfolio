@@ -4,6 +4,7 @@ import { ANALYTICS_LOCATION_CHANGE_EVENT, CV_DOWNLOAD_TRACKED_EVENT } from './an
 const SESSION_KEY = 'portfolio:custom-visitor-session:v2';
 const TRACK_ENDPOINT = '/api/track';
 const UPDATE_INTERVAL_MS = 15 * 60 * 1000;
+const MIN_FINAL_SESSION_MS = 60 * 1000;
 const MAX_ACTIVITIES = 160;
 
 type ActivityType = 'click' | 'page' | 'template' | 'cv';
@@ -142,14 +143,16 @@ const clickLabel = (target: EventTarget | null) => {
   const element = target instanceof Element ? target : null;
   if (!element) return 'Unknown click';
 
-  const actionable = element.closest('a, button, [role="button"], input, textarea, select') ?? element;
+  const actionable = element.closest('a, button, [role="button"], input, textarea, select, .work-folder');
+  if (!actionable) return '';
+
   const href = actionable instanceof HTMLAnchorElement ? ` -> ${actionable.href}` : '';
   return `${actionable.tagName.toLowerCase()}: ${readableText(actionable)}${href}`;
 };
 
 const isTemplateInteraction = (target: EventTarget | null) => {
   const element = target instanceof Element ? target : null;
-  return Boolean(element?.closest('[data-template], [data-template-id], .work-folder, .work-project'));
+  return Boolean(element?.closest('[data-template], [data-template-id], .work-folder'));
 };
 
 const recordActivity = (type: ActivityType, label: string) => {
@@ -195,6 +198,7 @@ const sendUpdate = async () => {
 const sendFinal = () => {
   const session = readSession();
   if (!session.startSent || session.finalSent) return;
+  if (session.activities.length === 0 && now() - session.startedAt < MIN_FINAL_SESSION_MS) return;
 
   const payload = {
     action: 'final',
@@ -222,11 +226,13 @@ export default function VisitorSessionTracker() {
   useEffect(() => {
     void sendStart();
 
-    const handleClick = (event: MouseEvent) => {
-      recordActivity(
-        isTemplateInteraction(event.target) ? 'template' : 'click',
-        clickLabel(event.target)
-      );
+    const handlePointerUp = (event: PointerEvent) => {
+      if (!event.isTrusted || !event.isPrimary || event.button !== 0) return;
+
+      const label = clickLabel(event.target);
+      if (!label) return;
+
+      recordActivity(isTemplateInteraction(event.target) ? 'template' : 'click', label);
     };
 
     const handlePageChange = () => {
@@ -250,22 +256,20 @@ export default function VisitorSessionTracker() {
       void sendUpdate();
     }, UPDATE_INTERVAL_MS);
 
-    document.addEventListener('click', handleClick, { capture: true, passive: true });
+    document.addEventListener('pointerup', handlePointerUp, { capture: true, passive: true });
     window.addEventListener(ANALYTICS_LOCATION_CHANGE_EVENT, handlePageChange);
     window.addEventListener('hashchange', handlePageChange);
     window.addEventListener('popstate', handlePageChange);
     window.addEventListener(CV_DOWNLOAD_TRACKED_EVENT, handleCvDownload);
-    window.addEventListener('beforeunload', sendFinal);
     window.addEventListener('pagehide', sendFinal);
 
     return () => {
       window.clearInterval(interval);
-      document.removeEventListener('click', handleClick, { capture: true });
+      document.removeEventListener('pointerup', handlePointerUp, { capture: true });
       window.removeEventListener(ANALYTICS_LOCATION_CHANGE_EVENT, handlePageChange);
       window.removeEventListener('hashchange', handlePageChange);
       window.removeEventListener('popstate', handlePageChange);
       window.removeEventListener(CV_DOWNLOAD_TRACKED_EVENT, handleCvDownload);
-      window.removeEventListener('beforeunload', sendFinal);
       window.removeEventListener('pagehide', sendFinal);
     };
   }, []);
