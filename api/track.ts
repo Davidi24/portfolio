@@ -17,7 +17,7 @@ import {
   type SessionRow,
   type StoredVisitorInfo,
   type VisitorInfo,
-} from '../server/visitorTracking';
+} from './visitorTracking';
 
 const MAX_BODY_LENGTH = 64_000;
 
