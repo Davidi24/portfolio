@@ -14,11 +14,21 @@ type NavigationTransitionDetail = {
   onCovered?: () => void;
 };
 
+function isBackForwardNav(): boolean {
+  try {
+    const entry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+    return entry?.type === 'back_forward';
+  } catch {
+    return false;
+  }
+}
+
 export default function StartupLoader() {
   const timersRef = useRef<number[]>([]);
   const [loaderKey, setLoaderKey] = useState(0);
   const [isExiting, setIsExiting] = useState(false);
   const [mode, setMode] = useState<LoaderMode | null>('intro');
+  const isBackRef = useRef(isBackForwardNav());
 
   useEffect(() => {
     const clearTimers = () => {
@@ -80,7 +90,11 @@ export default function StartupLoader() {
       aria-label="Page transition"
     >
       <div className="startup-loader__sheet" aria-hidden="true" />
-      {mode === 'intro' && <p className="startup-loader__text">Hello!</p>}
+      {mode === 'intro' && (
+        <p className="startup-loader__text">
+          {isBackRef.current ? 'Redirecting...' : 'Hello!'}
+        </p>
+      )}
     </div>
   );
 }

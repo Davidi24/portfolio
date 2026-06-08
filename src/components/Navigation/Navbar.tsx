@@ -54,8 +54,8 @@ const CV_LABEL = 'Download CV';
 const NAV_TRANSITION_EVENT = 'portfolio:navigation-transition';
 const EXPERIENCE_NAV_OFFSET_RATIO = 0.08;
 const CV_OPTIONS = [
-  { label: 'English', href: '/cv-en.pdf', download: 'David-CV-English.pdf' },
-  { label: 'Deutsch', href: '/cv-de.pdf', download: 'David-CV-Deutsch.pdf' },
+  { label: 'English', href: '/cv/english/cv.pdf', download: 'David-CV-English.pdf' },
+  { label: 'Deutsch', href: '/cv/german/cv.pdf', download: 'David-CV-Deutsch.pdf' },
 ] as const;
 
 type PortfolioWindow = Window & {
