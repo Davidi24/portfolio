@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { motion } from 'motion/react';
 import './TrueFocus.css';
@@ -100,20 +100,24 @@ export default function TrueFocus({
         const isActive = index === currentIndex && active;
 
         return (
-          <span
-            key={`${word}-${index}`}
-            ref={element => {
-              wordRefs.current[index] = element;
-            }}
-            className="true-focus-word"
-            style={{
-              filter: isActive ? 'blur(0px)' : `blur(${blurAmount}px)`,
-              transition: `filter ${animationDuration}s ease, opacity ${animationDuration}s ease`,
-              opacity: isActive ? 1 : 0.58,
-            }}
-          >
-            {word}
-          </span>
+          <Fragment key={`${word}-${index}`}>
+            <span
+              ref={element => {
+                wordRefs.current[index] = element;
+              }}
+              className="true-focus-word"
+              style={{
+                filter: isActive ? 'blur(0px)' : `blur(${blurAmount}px)`,
+                transition: `filter ${animationDuration}s ease, opacity ${animationDuration}s ease`,
+                opacity: isActive ? 1 : 0.58,
+              }}
+            >
+              {word}
+            </span>
+            {index === 1 && words.length > 2 && (
+              <span className="true-focus-line-break" aria-hidden="true" />
+            )}
+          </Fragment>
         );
       })}
 

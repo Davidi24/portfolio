@@ -34,6 +34,9 @@ const PHOTO_FRAME_INTERVAL_MS = 300;
 const MENU_ADVANCES_BEFORE_NEXT = 4;
 const MENU_AUTO_ADVANCE_DELAY_MS = 900;
 const MENU_AUTO_ADVANCE_DURATION_MS = 1200;
+const ABOUT_SHRINK_START_TIME = 8.55;
+const ABOUT_SHRINK_TO_FOCUS_DURATION = 1.45;
+const ABOUT_SHRINK_TO_TITLE_DURATION = 2.15;
 
 interface HeroRotatingPhraseProps {
   text: string;
@@ -353,7 +356,8 @@ export default function Hero() {
     const expandedTargetWidth = () => {
       const isLaptopViewport = window.innerWidth >= 1000 && window.innerWidth < 1300;
       const isMidMonitorViewport = window.innerWidth >= 1300 && window.innerWidth <= 1600;
-      const maxWidthRatio = window.innerWidth <= 1150 ? 0.99 : isLaptopViewport ? 0.76 : isMidMonitorViewport ? 0.68 : 0.62;
+      const isLargeMonitorViewport = window.innerWidth >= 1700 && window.innerWidth <= 2200;
+      const maxWidthRatio = window.innerWidth <= 1150 ? 0.99 : isLaptopViewport ? 0.76 : isMidMonitorViewport ? 0.68 : isLargeMonitorViewport ? 0.68 : 0.62;
       return Math.min(viewportLength('--hero-i-expanded-width', 'x', maxWidthRatio), window.innerWidth * maxWidthRatio);
     };
     const expandedTargetHeight = () => {
@@ -496,13 +500,49 @@ export default function Hero() {
         duration: 8,
         onReverseComplete: resetSequence,
       })
-      .to({}, {
-        duration: 0.01,
-        onStart: () => { setMediaActive(false); resetSequence(); },
+      .to(iLetter, {
+        x: centerX,
+        y: centerY,
+        scale: focusScale,
+        z: focusDepth,
+        width: initialWidth,
+        height: initialHeight,
+        textShadow: '0 0.06em 0.16em rgba(17, 17, 17, 0.2)',
+        duration: ABOUT_SHRINK_TO_FOCUS_DURATION,
+        ease: 'power3.inOut',
+        onStart: resetSequence,
+        onUpdate: lockILetterToViewportCenter,
+        onComplete: lockILetterToViewportCenter,
         onReverseComplete: () => {
           sequenceStartedRef.current = false;
           startFocusSequence();
         },
+      }, ABOUT_SHRINK_START_TIME)
+      .to([backingText, subtitle, mobileActions].filter(Boolean), {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        z: 0,
+        filter: 'blur(0px)',
+        duration: ABOUT_SHRINK_TO_TITLE_DURATION,
+        ease: 'power3.out',
+      }, ABOUT_SHRINK_START_TIME + ABOUT_SHRINK_TO_FOCUS_DURATION)
+      .to(iLetter, {
+        x: 0,
+        y: 0,
+        scale: 1,
+        z: 0,
+        width: initialWidth,
+        height: initialHeight,
+        textShadow: '0 0 0 rgba(17, 17, 17, 0)',
+        duration: ABOUT_SHRINK_TO_TITLE_DURATION,
+        ease: 'power3.out',
+        onComplete: resetSequence,
+      }, ABOUT_SHRINK_START_TIME + ABOUT_SHRINK_TO_FOCUS_DURATION)
+      .to({}, {
+        duration: 0.01,
+        onStart: () => { setMediaActive(false); resetSequence(); },
+        onReverseComplete: resetSequence,
       })
       .to({}, { duration: 0.001 });
 

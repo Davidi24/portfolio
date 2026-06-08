@@ -10,19 +10,27 @@
 	top: 0;
 	z-index: 1;
 	height: 100vh;
+	height: 100svh;
 	overflow: hidden;
 	background: #e8e8e2;
+	isolation: isolate;
+	transform: translate3d(0, 0, 0);
+	backface-visibility: hidden;
 }
 
 /* ── background image ─────────────────────────────────────── */
 .hero-bg {
 	position: absolute;
-	inset: 0;
+	inset: -2px;
 	background-image: url('/hero-bg.jpg');
 	background-size: cover;
 	background-position: center;
 	z-index: 0;
 	opacity: 0.13;
+	transform: translate3d(0, 0, 0) scale(1.006);
+	transform-origin: center;
+	backface-visibility: hidden;
+	will-change: transform;
 }
 
 /* ── left sidebar ─────────────────────────────────────────── */
