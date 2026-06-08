@@ -1,4 +1,4 @@
-import { ensureSessionsTable, getSql, json } from './visitorTracking';
+import { ensureSessionsTable, getSql, json } from './visitorTracking.js';
 
 export async function GET() {
   try {
