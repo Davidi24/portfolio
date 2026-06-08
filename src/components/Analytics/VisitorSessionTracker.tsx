@@ -1,33 +1,28 @@
 import { useEffect } from 'react';
 import { ANALYTICS_LOCATION_CHANGE_EVENT, CV_DOWNLOAD_TRACKED_EVENT } from './analyticsEvents';
 
-const SESSION_KEY = 'portfolio:visitor-session:v1';
-const DEFAULT_SUMMARY_INTERVAL_MS = 30 * 60 * 1000;
-const CHECK_INTERVAL_MS = 60 * 1000;
-const MAX_PAGES = 80;
-const MAX_CV_DOWNLOADS = 20;
+const SESSION_KEY = 'portfolio:custom-visitor-session:v2';
+const TRACK_ENDPOINT = '/api/track';
+const UPDATE_INTERVAL_MS = 15 * 60 * 1000;
+const MAX_ACTIVITIES = 160;
 
-type PageVisit = {
-  path: string;
-  at: number;
-};
+type ActivityType = 'click' | 'page' | 'template' | 'cv';
 
-type CvDownload = {
-  at: number;
-  source: string;
-  language: string;
+type ActivityItem = {
+  type: ActivityType;
+  label: string;
+  url: string;
+  at: string;
 };
 
 type VisitorSession = {
   id: string;
   startedAt: number;
-  referrer: string;
-  pages: PageVisit[];
-  cvDownloaded: boolean;
-  cvDownloads: CvDownload[];
-  lastActivityAt: number;
-  lastSummaryAt: number;
-  summaryCount: number;
+  startSent: boolean;
+  finalSent: boolean;
+  lastUrl: string;
+  activities: ActivityItem[];
+  pendingActivities: ActivityItem[];
 };
 
 type CvDownloadEvent = CustomEvent<{
@@ -35,45 +30,53 @@ type CvDownloadEvent = CustomEvent<{
   language?: string;
 }>;
 
-const summaryIntervalMs = () => {
-  const value = Number(import.meta.env.VITE_VISITOR_SUMMARY_INTERVAL_MS);
-  return Number.isFinite(value) && value > 0 ? value : DEFAULT_SUMMARY_INTERVAL_MS;
-};
-
 const now = () => Date.now();
 
-const currentPath = () =>
-  `${window.location.pathname}${window.location.search}${window.location.hash}`;
+const currentUrl = () => window.location.href;
 
 const newSessionId = () => {
   if (crypto.randomUUID) return crypto.randomUUID();
   return `session-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 };
 
-const createSession = (): VisitorSession => {
-  const startedAt = now();
-
-  return {
-    id: newSessionId(),
-    startedAt,
-    referrer: document.referrer || '',
-    pages: [],
-    cvDownloaded: false,
-    cvDownloads: [],
-    lastActivityAt: startedAt,
-    lastSummaryAt: startedAt,
-    summaryCount: 0,
-  };
+const detectDeviceType = () => {
+  const userAgent = navigator.userAgent.toLowerCase();
+  if (/android|iphone|ipad|ipod|mobile|windows phone/.test(userAgent)) return 'mobile';
+  return 'desktop';
 };
+
+const detectBrowserName = () => {
+  const ua = navigator.userAgent;
+  if (/Edg\//.test(ua)) return 'Microsoft Edge';
+  if (/OPR\//.test(ua)) return 'Opera';
+  if (/Firefox\//.test(ua)) return 'Firefox';
+  if (/Chrome\//.test(ua) || /CriOS\//.test(ua)) return 'Chrome';
+  if (/Safari\//.test(ua)) return 'Safari';
+  return 'Unknown browser';
+};
+
+const createSession = (): VisitorSession => ({
+  id: newSessionId(),
+  startedAt: now(),
+  startSent: false,
+  finalSent: false,
+  lastUrl: currentUrl(),
+  activities: [],
+  pendingActivities: [],
+});
 
 const readSession = () => {
   const stored = sessionStorage.getItem(SESSION_KEY);
-  if (!stored) return createSession();
+  if (!stored) {
+    const session = createSession();
+    saveSession(session);
+    return session;
+  }
 
   try {
-    const parsed = JSON.parse(stored) as VisitorSession;
-    if (!parsed.id || !parsed.startedAt) return createSession();
-    return parsed;
+    const session = JSON.parse(stored) as VisitorSession;
+    if (!session.id || !session.startedAt) return createSession();
+    return session;
   } catch {
     return createSession();
   }
@@ -83,119 +86,187 @@ const saveSession = (session: VisitorSession) => {
   sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
 };
 
-const recordPageVisit = () => {
-  const session = readSession();
-  const path = currentPath();
-  const lastPage = session.pages.at(-1);
+const sessionPayloadBase = (session: VisitorSession) => ({
+  sessionId: session.id,
+  timestamp: new Date().toISOString(),
+  currentUrl: currentUrl(),
+  referrer: document.referrer || '',
+  deviceType: detectDeviceType(),
+  browserName: detectBrowserName(),
+  userAgent: navigator.userAgent,
+  totalTimeSeconds: Math.max(0, Math.round((now() - session.startedAt) / 1000)),
+});
 
-  if (lastPage?.path !== path) {
-    session.pages = [...session.pages, { path, at: now() }].slice(-MAX_PAGES);
-    session.lastActivityAt = now();
-    saveSession(session);
-  }
+const sendJson = async (payload: Record<string, unknown>) => {
+  const response = await fetch(TRACK_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+    keepalive: true,
+  });
 
-  return session;
+  return response.ok;
 };
 
-const payloadFromSession = (session: VisitorSession) => ({
-  sessionId: session.id,
-  startedAt: new Date(session.startedAt).toISOString(),
-  referrer: session.referrer,
-  pages: session.pages.map(page => ({
-    path: page.path,
-    at: new Date(page.at).toISOString(),
-  })),
-  cvDownloaded: session.cvDownloaded,
-  cvDownloads: session.cvDownloads.map(download => ({
-    at: new Date(download.at).toISOString(),
-    source: download.source,
-    language: download.language,
-  })),
-  totalTimeSeconds: Math.max(0, Math.round((now() - session.startedAt) / 1000)),
-  summaryNumber: session.summaryCount + 1,
-});
+const sendStart = async () => {
+  const session = readSession();
+  if (session.startSent) return;
+
+  try {
+    const ok = await sendJson({
+      action: 'start',
+      ...sessionPayloadBase(session),
+    });
+
+    if (ok) {
+      const updated = readSession();
+      updated.startSent = true;
+      saveSession(updated);
+    }
+  } catch (error) {
+    console.error('Visitor start tracking failed', error);
+  }
+};
+
+const readableText = (element: Element) => {
+  const labelled = element.getAttribute('aria-label') || element.getAttribute('title');
+  if (labelled) return labelled.trim();
+
+  const text = element.textContent?.replace(/\s+/g, ' ').trim();
+  if (text) return text.slice(0, 120);
+
+  return element.tagName.toLowerCase();
+};
+
+const clickLabel = (target: EventTarget | null) => {
+  const element = target instanceof Element ? target : null;
+  if (!element) return 'Unknown click';
+
+  const actionable = element.closest('a, button, [role="button"], input, textarea, select') ?? element;
+  const href = actionable instanceof HTMLAnchorElement ? ` -> ${actionable.href}` : '';
+  return `${actionable.tagName.toLowerCase()}: ${readableText(actionable)}${href}`;
+};
+
+const isTemplateInteraction = (target: EventTarget | null) => {
+  const element = target instanceof Element ? target : null;
+  return Boolean(element?.closest('[data-template], [data-template-id], .work-folder, .work-project'));
+};
+
+const recordActivity = (type: ActivityType, label: string) => {
+  const session = readSession();
+  const activity: ActivityItem = {
+    type,
+    label,
+    url: currentUrl(),
+    at: new Date().toISOString(),
+  };
+
+  session.activities = [...session.activities, activity].slice(-MAX_ACTIVITIES);
+  session.pendingActivities = [...session.pendingActivities, activity].slice(-MAX_ACTIVITIES);
+  saveSession(session);
+};
+
+const sendUpdate = async () => {
+  const session = readSession();
+  if (!session.startSent || session.pendingActivities.length === 0) return;
+
+  const pending = session.pendingActivities;
+
+  try {
+    const ok = await sendJson({
+      action: 'update',
+      ...sessionPayloadBase(session),
+      activities: pending,
+      allActivities: session.activities,
+    });
+
+    if (ok) {
+      const updated = readSession();
+      updated.pendingActivities = updated.pendingActivities.filter(
+        activity => !pending.some(sent => sent.at === activity.at && sent.label === activity.label)
+      );
+      saveSession(updated);
+    }
+  } catch (error) {
+    console.error('Visitor update tracking failed', error);
+  }
+};
+
+const sendFinal = () => {
+  const session = readSession();
+  if (!session.startSent || session.finalSent) return;
+
+  const payload = {
+    action: 'final',
+    ...sessionPayloadBase(session),
+    activities: session.pendingActivities,
+    allActivities: session.activities,
+  };
+  const body = JSON.stringify(payload);
+  const blob = new Blob([body], { type: 'application/json' });
+
+  session.finalSent = true;
+  saveSession(session);
+
+  if (!navigator.sendBeacon(TRACK_ENDPOINT, blob)) {
+    void fetch(TRACK_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body,
+      keepalive: true,
+    });
+  }
+};
 
 export default function VisitorSessionTracker() {
   useEffect(() => {
-    let sending = false;
+    void sendStart();
 
-    const maybeSendSummary = async () => {
-      if (sending) return;
-
-      const session = readSession();
-      const currentTime = now();
-      const intervalMs = summaryIntervalMs();
-      const summaryIsDue = currentTime - session.lastSummaryAt >= intervalMs;
-      const hasNewActivity = session.lastActivityAt > session.lastSummaryAt;
-
-      if (!summaryIsDue || !hasNewActivity) return;
-
-      sending = true;
-
-      try {
-        const response = await fetch('/api/visitor-session', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payloadFromSession(session)),
-          keepalive: true,
-        });
-
-        if (response.ok) {
-          const updated = readSession();
-          updated.lastSummaryAt = currentTime;
-          updated.summaryCount += 1;
-          saveSession(updated);
-        }
-      } catch {
-        // The next interval will retry if the visitor is still active.
-      } finally {
-        sending = false;
-      }
+    const handleClick = (event: MouseEvent) => {
+      recordActivity(
+        isTemplateInteraction(event.target) ? 'template' : 'click',
+        clickLabel(event.target)
+      );
     };
 
     const handlePageChange = () => {
-      recordPageVisit();
-      void maybeSendSummary();
+      const session = readSession();
+      const url = currentUrl();
+      if (session.lastUrl === url) return;
+
+      session.lastUrl = url;
+      saveSession(session);
+      recordActivity('page', `Changed page to ${url}`);
     };
 
     const handleCvDownload = (event: Event) => {
       const detail = (event as CvDownloadEvent).detail ?? {};
-      const session = readSession();
-
-      session.cvDownloaded = true;
-      session.cvDownloads = [
-        ...session.cvDownloads,
-        {
-          at: now(),
-          source: detail.source ?? 'unknown',
-          language: detail.language ?? 'default',
-        },
-      ].slice(-MAX_CV_DOWNLOADS);
-      session.lastActivityAt = now();
-      saveSession(session);
-
-      void maybeSendSummary();
+      const language = detail.language ?? 'default';
+      const source = detail.source ?? 'unknown';
+      recordActivity('cv', `Downloaded CV (${language}) from ${source}`);
     };
 
-    recordPageVisit();
-
     const interval = window.setInterval(() => {
-      void maybeSendSummary();
-    }, CHECK_INTERVAL_MS);
+      void sendUpdate();
+    }, UPDATE_INTERVAL_MS);
 
+    document.addEventListener('click', handleClick, { capture: true, passive: true });
     window.addEventListener(ANALYTICS_LOCATION_CHANGE_EVENT, handlePageChange);
     window.addEventListener('hashchange', handlePageChange);
     window.addEventListener('popstate', handlePageChange);
     window.addEventListener(CV_DOWNLOAD_TRACKED_EVENT, handleCvDownload);
-    document.addEventListener('visibilitychange', maybeSendSummary);
+    window.addEventListener('beforeunload', sendFinal);
+    window.addEventListener('pagehide', sendFinal);
 
     return () => {
       window.clearInterval(interval);
+      document.removeEventListener('click', handleClick, { capture: true });
       window.removeEventListener(ANALYTICS_LOCATION_CHANGE_EVENT, handlePageChange);
       window.removeEventListener('hashchange', handlePageChange);
       window.removeEventListener('popstate', handlePageChange);
       window.removeEventListener(CV_DOWNLOAD_TRACKED_EVENT, handleCvDownload);
-      document.removeEventListener('visibilitychange', maybeSendSummary);
+      window.removeEventListener('beforeunload', sendFinal);
+      window.removeEventListener('pagehide', sendFinal);
     };
   }, []);
 

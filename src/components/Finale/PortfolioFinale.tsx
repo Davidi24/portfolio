@@ -342,21 +342,22 @@ export default function PortfolioFinale() {
             <p className="privacy-dialog-kicker">// Privacy Policy</p>
             <h2 id="privacy-dialog-title">Data Collected</h2>
             <p>
-              I use Vercel Analytics to understand how this portfolio is used. It can collect page
-              views, approximate location, device and browser information, referrer, time on page,
-              pages visited, and the CV Download Clicked event.
+              I use Vercel Analytics and a custom session tracker to understand how this site is used.
+              These can collect page views, approximate location (city/country from IP), device type,
+              browser, referrer, time on page, pages visited, and interaction events such as clicks and
+              template views. No precise location or personal identity is collected.
             </p>
 
             <h2>Purpose</h2>
             <p>
-              This data is used only to improve the site and receive simple visitor session
-              summaries by email. It is not used for advertising, profiling, or selling personal data.
+              This data is used only to improve the site and receive visitor session summaries by
+              email. It is not used for advertising, profiling, or selling personal data.
             </p>
 
-            <h2>Cookies</h2>
+            <h2>Storage</h2>
             <p>
-              Vercel Analytics is cookieless and does not use tracking cookies. The session summary
-              uses browser session storage only for the current visit.
+              The tracker uses browser session storage during the visit and stores session records in
+              Neon for up to 7 days before automatic cleanup.
             </p>
 
             <h2>Your Rights</h2>
