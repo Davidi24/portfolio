@@ -40,23 +40,21 @@
       "highlights": ["POS terminal + KDS + admin dashboard", "Kotlin Multiplatform mobile & desktop", "Monorepo with Turborepo + Docker"]
     },
     {
-      "slug": "digital-wedding-invitation",
+      "slug": "aed-fiskal",
       "index": "03",
-      "title": "Wedding Invitation",
-      "category": "Web Platform",
-      "status": "Live",
-      "body": "Digital wedding invitation platform with professional UI templates and high-quality animations.",
-      "tags": ["Astro", "Next.js", "GSAP", "Motion"],
-      "links": [
-        { "label": "Live Demo", "href": "https://www.beforethebells.com" }
-      ],
+      "title": "AED Fiskal",
+      "category": "Gas Station Management",
+      "status": "Internal Company System",
+      "body": "Developed a gas station management and fiscalization platform for handling fuel sales, fiscal receipts, payments, pump operations, and transaction reporting.",
+      "tags": ["Spring Boot", "Next.js", "TypeScript", "PostgreSQL", "Microservices", "Kafka", "Redis", "WebSockets"],
+      "links": [],
       "images": ["/projects/3/1.webp", "/projects/3/2.webp", "/projects/3/3.webp"],
       "description": [
-        "A platform for creating and sharing digital wedding invitations with professional UI templates and smooth, high-quality animations powered by GSAP.",
-        "Each invitation is crafted with careful attention to motion — entrance sequences, scroll-driven reveals, and transitions that feel premium without being heavy.",
-        "The project emphasizes visual quality, ease of customization, and a smooth experience for both invitation creators and their guests."
+        "AED Fiskal is a gas station management and fiscalization platform built to support fuel sales, fiscal receipts, payments, pump operations, and transaction reporting.",
+        "The system uses Spring Boot, Next.js, TypeScript, PostgreSQL, and a microservices architecture, with Kafka, Redis, and WebSockets supporting real-time operations and communication.",
+        "This was an internal company system, so no public website or GitHub repository is available."
       ],
-      "highlights": ["Professional UI invitation templates", "GSAP-powered animations", "Guest management & RSVP system"]
+      "highlights": ["Fuel sales and fiscalization", "Pump operations and payment processing", "Real-time transaction reporting"]
     },
     {
       "slug": "360-deutsch",
